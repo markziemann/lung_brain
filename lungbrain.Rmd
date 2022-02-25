@@ -214,8 +214,8 @@ I will begin with hypothalamus and leave the rest to Craig's team.
 
 ss1 <- ss[which(ss$Region=="hyp"),]
 xx1 <- xx[which(colnames(xx) %in% rownames(ss1))]
-xx1 <- xx1_l[which(rowSums(xx1)>=10),]
-rpm1 <- xx1_l/colSums(xx1) *1e6
+xx1 <- xx1[which(rowSums(xx1)>=10),]
+rpm1 <- xx1/colSums(xx1) *1e6
 
 dim(xx)
 dim(xx1)
@@ -256,7 +256,7 @@ plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
   type = "p",bty="n", pch=19, cex=4 ,col=cols )
 text(mds, labels=rownames(mds) ,col="black")
 
-legend("topright", inset=.02, title="treatment",
+legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss1$Treatment)) , col=unique(cols), pch=19,  cex=1.2)
 
 ```
@@ -552,10 +552,13 @@ heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cex
 
 ## Conclusion
 
-There was some variability among samples in the hypothalamus, resulting in no statistically significant findings.
-However the heatmap does show some potentially interesting patterns.
-The gene pathway analysis did show some differences.
-The mitch software can perform multi-contrast pathway analysis and will be important to contrast the effect of the treatment
+There was some variability among samples in the hypothalamus, in particular some OVA samples could be classified as outliers
+(EA9-1 and EA3-1).
+Further investigation would be required to understand the origin of this variability.
+LPS resulted in the differential expression of just 30 genes in the hypothalamus.
+OVA was variable, so no significant genes were identified.
+Analysis with mitch identified some interesting pathways as seen in the mitch heatmap (see the mitch reports for details).
+The mitch software can perform multi-contrast pathway analysis and will be important to contrast the effect of the treatments
 in different tissues.
 
 ## References
