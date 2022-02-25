@@ -1,0 +1,593 @@
+---
+title: "Lung-brain axis"
+author: "Mark Ziemann"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    fig_width: 7
+    fig_height: 7
+theme: cosmo
+---
+
+Source: https://github.com/markziemann/lungbrain
+
+
+# Introduction
+
+Eslam’s Summary of RNA seq
+
+* Project title: Characterization any gene expression changes in the mice brain in response to peripheral 
+inflammation in the lung (asthma).
+
+* Methodology: Mice were divided into three groups (1 control group and 2 asthmatic groups OVA and LPS).
+At the end of the experiment, RNA was isolated from 5 different mice brain regions 
+(Hypothalamus, Amygdala, Hippocampus, PAG, and NI) (n=7 per group) using 
+(Qiagen RNAeasy Mini kit 250) (Cat# 74106, Hilden, Germany).
+In total 104 RNA samples. Afterward, RNA quality control was checked using Qubit4 and 4200 Tapestation.
+Then RNA sequencing was done using NEBNext® Ultra™ II Directional RNA Library Prep Kit for Illumina.
+
+* Data form: FASTQ raw data (FYI, RNA-seq reads table is attached in a separate page).
+
+* ID: (1-104)
+
+* Aim: Detection of the differences in gene expression for each brain region between our 3 different groups?
+
+
+## Bioinformatics methods
+
+Fastqc (v0.11.9) was used to inspect sequence quality[1].
+
+The mouse transcriptome was downloaded from GENCODE version 28[2].
+
+Skewer (v0.2.2) was used to trim low quality bases (qual<20) from the 3' end of the read[3].
+
+Kallisto (0.46.1) was used to map RNA-seq reads to the transcriptome [4].
+
+Multiqc was used to tabulate sequence quality, trimming and mapping statistics [5].
+
+Data were read into R v4.1.2 and duplicate lane data were aggregated, and transcript level counts were aggregated to gene level counts.
+
+Genes with an average of less than 10 reads across samples were excluded from downstream analysis.
+
+DESeq (1.32.0) was used with default settings to assay differential expression between control and treatment groups for all tissues [6].
+
+Pathway analysis was performed with reactome gene sets obtained from MSigDB and converted to mouse gene identifiers with the msigdbr package
+(performed on 16-02-2022) [7,8,9].
+
+Differential pathway analysis was performed with the "mitch" bioconductor package [10].
+
+Genes and pathways with false discovery rate (FDR)<0.05 were considered significant.
+
+```{r,packages}
+
+suppressPackageStartupMessages({
+    library("zoo")
+    library("tidyverse")
+    library("reshape2")
+    library("DESeq2")
+    library("gplots")
+    library("fgsea")
+    library("MASS")
+    library("mitch")
+    library("eulerr")
+    library("limma")
+    library("topconfects")
+    library("kableExtra")
+    library("vioplot")
+    library("beeswarm")
+})
+
+```
+
+## Import read counts
+
+Importing RNA-seq data
+
+```{r,importdata}
+
+tmp <- read.table("3col.tsv.gz",header=F)
+x <- as.matrix(acast(tmp, V2~V1, value.var="V3", fun.aggregate = sum))
+x <- as.data.frame(x)
+accession <- sapply((strsplit(rownames(x),"\\|")),"[[",2)
+symbol<-sapply((strsplit(rownames(x),"\\|")),"[[",6)
+x$geneid <- paste(accession,symbol)
+xx <- aggregate(. ~ geneid,x,sum)
+rownames(xx) <- xx$geneid
+xx$geneid = NULL
+xx <- round(xx)
+xx <- xx[,which(colnames(xx)!="test")]
+xx[1:6,1:6]
+dim(xx)
+
+```
+
+Fix the sample names.
+
+They are duplicated for lane 1 and 2, which I will aggregate.
+
+```{r,colnames}
+
+txx <- as.data.frame(t(xx))
+txx$label <- sapply(strsplit(rownames(txx),"_"),"[[",1)
+txx[1:3,c(1:4,ncol(txx))]
+txx2 <- aggregate(. ~ label,txx,sum)
+txx2[1:3,1:4]
+rownames(txx2) <- txx2[,1]
+txx2[,1] = NULL
+xx <- as.data.frame(t(txx2))
+xx[1:4,1:5]
+write.table(xx,file="lungbrain_counts.tsv",sep="\t",quote=FALSE)
+rxx <- xx/colSums(xx) *1e6
+rxx[1:4,1:5]
+
+```
+
+Samplesheet.
+
+Need to delete "IE13-4".
+
+```{r,ss}
+
+ss <- read.table("lungbrain_samplesheet.tsv",header=TRUE)
+
+rownames(ss) <- gsub('\\.','-',paste("EA",as.character(ss$OriginalID),sep=""))
+ss <- ss[order(rownames(ss)),]
+
+rownames(ss) == colnames(rxx)
+
+ss %>% kbl(caption = "Sample sheet") %>%
+  kable_paper("hover", full_width = F)
+
+```
+
+## QC analysis
+
+Here I'll look at a few different quality control measures.
+
+The simplest is the number and proportion of reads that are assigned to genes.
+
+```{r,qc1,fig.height=7,fig.width=7}
+
+par(mar=c(5,8,3,1))
+barplot(colSums(xx),horiz=TRUE,las=1,xlab="num reads",col=ss$cols)
+sums <- colSums(xx)
+sums <- sums[order(sums)]
+barplot(sums,horiz=TRUE,las=1,xlab="num reads",cex.names=0.8)
+abline(v=15000000,col="red")
+which(sums<15000000)
+
+```
+
+## MDS plot for all samples
+
+Multidimensional scaling plot to show the variation between all samples, very similar to PCA.
+
+```{r,mds1,fig.height=7,fig.width=7}
+
+par(mar=c(5.1,4.1,4.1,2.1))
+
+mds <- cmdscale(dist(t(xx)))
+
+cols <- as.numeric(as.factor(ss$Region))+1
+pchs <- as.numeric(factor(ss$Treatment))+14
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=pchs, cex=4 ,col=cols )
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("bottomleft", inset=.02, title="tissue",
+   legend=unique(as.factor(ss$Region)) , fill=unique(cols),  cex=1.2)
+
+legend("left", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=unique(pchs),  cex=1.2)
+
+```
+
+## Correlation heatmap
+
+```{r,correl1}
+
+heatmap.2(cor(xx),trace="n",main="Pearson correlation heatmap",margin=c(8,8),cexRow=0.7,cexCol=0.7)
+
+heatmap.2(cor(xx),trace="n",main="Pearson correlation heatmap",margin=c(8,8),cexRow=0.7,cexCol=0.7)
+
+```
+
+## Set up the different datasets for differential expression analysis
+
+Here, I'll give an example on how to separate the data matrix by tissue and then evaluate differential expression.
+
+Don't forget to remove poorly detected genes from the matrix with a threshold of 10 reads per sample on average.
+
+There are 5 contrasts to set up, one for each tissue.
+
+The separate sample sheets are called s1, s2, etc.
+
+The separate counts tables are called x1, x2, etc.
+
+I will begin with hypothalamus and leave the rest to Craig's team.
+
+```{r,filter}
+
+ss1 <- ss[which(ss$Region=="hyp"),]
+xx1 <- xx[which(colnames(xx) %in% rownames(ss1))]
+xx1 <- xx1_l[which(rowSums(xx1)>=10),]
+rpm1 <- xx1_l/colSums(xx1) *1e6
+
+dim(xx)
+dim(xx1)
+
+ss1_l <- ss[which(ss$Region=="hyp" & ss$Treatment != "OVA"),]
+xx1_l <- xx[which(colnames(xx) %in% rownames(ss1_l))]
+xx1_l <- xx1_l[which(rowSums(xx1_l)>=10),]
+rpm1_l <- xx1_l/colSums(xx1_l) *1e6
+
+dim(xx)
+dim(xx1_l)
+
+ss1_o <- ss[which(ss$Region=="hyp" & ss$Treatment != "LPS"),]
+xx1_o <- xx[which(colnames(xx) %in% rownames(ss1_o))]
+xx1_o <- xx1_o[which(rowSums(xx1_o)>=10),]
+rpm1_o <- xx1_o/colSums(xx1_o) *1e6
+
+dim(xx)
+dim(xx1_o)
+
+```
+
+## Differential expression with DESeq2
+
+For each brain region, there are two treatments, and so two contrasts are performed.
+
+Before we do that, let's look at the MDS plot of the hypothalamus data.
+
+```{r,mds_hyp}
+
+par(mar=c(5.1,4.1,4.1,2.1))
+
+mds <- cmdscale(dist(t(xx1)))
+
+cols <- as.numeric(factor(ss1$Treatment))+1
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n", pch=19, cex=4 ,col=cols )
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("topright", inset=.02, title="treatment",
+   legend=unique(as.factor(ss1$Treatment)) , col=unique(cols), pch=19,  cex=1.2)
+
+```
+
+Now run DESeq2 for the contrasts.
+
+```{r,de01}
+
+dds <- DESeqDataSetFromMatrix(countData = xx1_l , colData = ss1_l , design = ~ Treatment )
+res <- DESeq(dds)
+z <- results(res)
+vsd <- vst(dds, blind=FALSE)
+zz <- cbind(as.data.frame(z),assay(vsd))
+dge <- as.data.frame(zz[order(zz$pvalue),])
+dge[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast 1: Effect of treatment in hypothalamus") %>%
+  kable_paper("hover", full_width = F)
+dge1_l <- dge
+d1up_l <- rownames(subset(dge1_l,padj <= 0.05 & log2FoldChange > 0))
+d1dn_l <- rownames(subset(dge1_l,padj <= 0.05 & log2FoldChange < 0))
+write.table(dge1_l,file="dge1_l.tsv",quote=FALSE,sep="\t")
+
+dds <- DESeqDataSetFromMatrix(countData = xx1_o , colData = ss1_o , design = ~ Treatment )
+res <- DESeq(dds)
+z <- results(res)
+vsd <- vst(dds, blind=FALSE)
+zz <- cbind(as.data.frame(z),assay(vsd))
+dge <- as.data.frame(zz[order(zz$pvalue),])
+dge[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast 1: Effect of treatment in hypothalamus") %>%
+  kable_paper("hover", full_width = F)
+dge1_o <- dge
+d1up_o <- rownames(subset(dge1_o,padj <= 0.05 & log2FoldChange > 0))
+d1dn_o <- rownames(subset(dge1_o,padj <= 0.05 & log2FoldChange < 0))
+write.table(dge1_o,file="dge1_o.tsv",quote=FALSE,sep="\t")
+
+```
+
+Here let's look at some plots.
+
+MA plot shows the average level and fold change of all detected genes.
+Volcano plot shows the fold change and the significance, as measured by -log(p-value).
+Significant genes are shown as red points.
+
+There are heatmaps of the top ranked genes by p-value.
+Above the gene expression values there is a bar in orange/gray colours.
+Control is shown in orange and treatment in grey.
+
+```{r,deplots1}
+
+maplot <- function(de,contrast_name) {
+  de <- de[which(!is.na(de$padj)),]
+  sig <-subset(de, padj < 0.05 )
+  up <-rownames(subset(de, padj < 0.05 & log2FoldChange > 0))
+  dn <-rownames(subset(de, padj < 0.05 & log2FoldChange < 0))
+  GENESUP <- length(up)
+  GENESDN <- length(dn)
+  DET=nrow(de)
+  SUBHEADER = paste(GENESUP, "up, ", GENESDN, "down", DET, "detected")
+  ns <-subset(de, padj > 0.05 )
+  plot(log2(de$baseMean),de$log2FoldChange,
+       xlab="log2 basemean", ylab="log2 foldchange",
+       pch=19, cex=0.5, col="dark gray",
+       main=contrast_name, cex.main=1)
+  points(log2(sig$baseMean),sig$log2FoldChange,
+         pch=19, cex=0.5, col="red")
+  mtext(SUBHEADER,cex = 1)
+}
+
+make_volcano <- function(de,name) {
+    de <- de[which(!is.na(de$padj)),]
+    de$pvalue[which(de$pvalue==0)] <- 1e-320
+    sig <- subset(de,padj<0.05)
+    N_SIG=nrow(sig)
+    N_UP=nrow(subset(sig,log2FoldChange>0))
+    N_DN=nrow(subset(sig,log2FoldChange<0))
+    DET=nrow(de)
+    HEADER=paste(N_SIG,"@5%FDR,", N_UP, "up", N_DN, "dn", DET, "detected")
+    plot(de$log2FoldChange,-log10(de$pval),cex=0.5,pch=19,col="darkgray",
+        main=name, xlab="log2 FC", ylab="-log10 pval")
+    mtext(HEADER)
+    grid()
+    points(sig$log2FoldChange,-log10(sig$pval),cex=0.5,pch=19,col="red")
+}
+
+make_volcano2 <- function(de,name) {
+    de <- de[which(!is.na(de$padj)),]
+    de$pvalue[which(de$pvalue==0)] <- 1e-320
+    sig <- subset(de,padj<0.05)
+    N_SIG=nrow(sig)
+    N_UP=nrow(subset(sig,log2FoldChange>0))
+    N_DN=nrow(subset(sig,log2FoldChange<0))
+    DET=nrow(de)
+    HEADER=paste(N_SIG,"@5%FDR,", N_UP, "up", N_DN, "dn", DET, "detected")
+    top <- head(sig,30)
+    mylabels <- sapply(strsplit(rownames(top)," "),"[[",2)
+    plot(de$log2FoldChange,-log10(de$pval),cex=0.5,pch=19,col="darkgray",
+        main=name, xlab="log2 FC", ylab="-log10 pval")
+    mtext(HEADER)
+    grid()
+    points(sig$log2FoldChange,-log10(sig$pval),cex=0.5,pch=19,col="red")
+    text(top$log2FoldChange+0.2,-log10(top$pval),labels=mylabels, srt=35 ,cex=0.7)
+}
+
+make_heatmap <- function(de,name,myss,mx,n=30){
+  colfunc <- colorRampPalette(c("blue", "white", "red"))
+  csc <- myss$Treatment
+  csc <- gsub("Control","orange",csc)
+  csc <- gsub("LPS","gray",csc)
+  csc <- gsub("OVA","yellow",csc)
+  mxn <- mx/rowSums(mx)*1000000
+  x <- mxn[which(rownames(mxn) %in% rownames(head(de,n))),]
+  heatmap.2(as.matrix(x),trace="none",col=colfunc(25),scale="row", margins = c(10,15), cexRow=0.7,
+    main=paste("Top ranked",n,"genes in",name) , ColSideColors = csc  )
+  mtext("ctrl=orange, LPS=gray, OVA=yellow")
+}
+
+make_heatmap2 <- function(de,name,myss,mx,n=30){
+  colfunc <- colorRampPalette(c("blue", "white", "red"))
+  csc <- myss$Treatment
+  csc <- gsub("Control","orange",csc)
+  csc <- gsub("LPS","gray",csc)
+  csc <- gsub("OVA","yellow",csc)
+  mxn <- mx/rowSums(mx)*1000000
+  x <- mxn[which(rownames(mxn) %in% rownames(head(de,n))),]
+  rownames(x) <- sapply(strsplit(rownames(x)," "),"[[",2)
+  heatmap.2(as.matrix(x),trace="none",col=colfunc(25),scale="row", margins = c(10,15), cexRow=0.7,
+    main=paste("Top ranked",n,"genes in",name) ,  ColSideColors = csc   )
+  mtext("ctrl=orange, LPS=gray, OVA=yellow")
+}
+
+mymds <- function(de,name,myss,mx) {
+  mds <- cmdscale(dist(t(mx)))
+  csc <-  myss$Treatment
+  csc <- gsub("Control","orange",csc)
+  csc <- gsub("LPS","gray",csc)
+  csc <- gsub("OVA","yellow",csc)
+  plot(mds, xlab="Coordinate 1", ylab="Coordinate 2", main = name ,
+    type = "p",bty="n",pch=19, cex=4 ,col=csc )
+  text(mds, labels=rownames(mds) ,col="black")
+  legend("topright", inset=.02, title="treatment",
+    legend=unique(as.factor(myss$Treatment)) , pch=19, col=unique(csc),  cex=1.4)
+}
+
+# make plots for contrast 1
+maplot(dge1_l,"Cont1: Effect of LPS treatment in hypothalamus")
+make_volcano(dge1_l,"Cont1: Effect of LPS treatment in hypothalamus")
+make_heatmap(de=dge1_l,name="Cont1: Effect of LPS treatment in hypothalamus",myss=ss1_l,mx=xx1_l,n=50)
+make_heatmap2(de=dge1_l,name="Cont1: Effect of LPS treatment in hypothalamus",myss=ss1_l,mx=xx1_l,n=50)
+mymds(de=dge1_l,name="Cont1: Effect of LPS treatment in hypothalamus",myss=ss1_l,mx=xx1_l)
+
+maplot(dge1_o,"Cont1: Effect of OVA treatment in hypothalamus")
+make_volcano(dge1_o,"Cont1: Effect of OVA treatment in hypothalamus")
+make_heatmap(de=dge1_o,name="Cont1: Effect of OVA treatment in hypothalamus",myss=ss1_o,mx=xx1_o,n=50)
+make_heatmap2(de=dge1_o,name="Cont1: Effect of OVA treatment in hypothalamus",myss=ss1_o,mx=xx1_o,n=50)
+mymds(de=dge1_o,name="Cont1: Effect of OVA treatment in hypothalamus",myss=ss1_o,mx=xx1_o)
+
+```
+
+## Euler diagrams
+
+Below we're comparing the effect of the two treatments on the number of genes found, using an Euler diagram.
+
+```{r,euler}
+
+par(mar=c(2,2,2,2))
+
+v0 <- list("hyp LPS up"=d1up_l, 
+  "hyp LPS dn"=d1dn_l,
+  "hyp OVA up"=d1up_o,
+  "hyp OVA dn"=d1dn_o)
+
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on hypothalamus")
+
+```
+
+
+## Single contrast pathway analysis with mitch
+
+Firstly need to conduct mitch enrichment analysis for each contrast separately.
+
+```{r,gene_sets}
+
+if  (!file.exists("mouse_msigdb_reactome_2022-02-16.gmt")) {
+  download.file("http://ziemann-lab.net/public/msigdb_mouse/mouse_msigdb_reactome_2022-02-16.gmt",
+    destfile="mouse_msigdb_reactome_2022-02-16.gmt")
+}
+genesets <- gmt_import("mouse_msigdb_reactome_2022-02-16.gmt")
+names(genesets) <- gsub("REACTOME_","",names(genesets))
+names(genesets) <- gsub("_"," ",names(genesets))
+
+# gene table
+gt <- as.data.frame(rownames(xx))
+gt$gene <- sapply(strsplit(gt[,1]," "),"[[",2)
+
+```
+
+Mitch for LPS.
+
+```{r,mitch 1 lps}
+
+m1_l <- mitch_import(dge1_l, DEtype="deseq2",geneTable=gt)
+mres1_l <- mitch_calc(m1_l, genesets, priority="effect")
+head(mres1_l$enrichment_result,20) %>% 
+  kbl(caption = "Top gene pathway differences in hypothalamus for LPS") %>%
+  kable_paper("hover", full_width = F)
+m1_l_top <- subset(mres1_l$enrichment_result,p.adjustANOVA<0.05)
+m1_l_up <- subset(m1_l_top,s.dist>0)$set
+m1_l_dn <- subset(m1_l_top,s.dist<0)$set
+mitch_report(mres1_l,outfile="mitch1_l.html",overwrite=TRUE)
+write.table(mres1_l$enrichment_result,file="mitch1_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m1_l_top_up <- head(subset(m1_l_top,s.dist>0),10)[,"s.dist"]
+names(m1_l_top_up) <- head(subset(m1_l_top,s.dist>0),10)[,"set"]
+m1_l_top_dn <- head(subset(m1_l_top,s.dist<0),10)[,"s.dist"]
+names(m1_l_top_dn) <- head(subset(m1_l_top,s.dist<0),10)[,"set"]
+m1_l_top_updn <- c(m1_l_top_up,m1_l_top_dn)
+m1_l_top_updn <- m1_l_top_updn[order(m1_l_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m1_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hypothalamus")
+grid()
+
+```
+
+Mitch for OVA.
+
+```{r,mitch 1 ova}
+
+m1_o <- mitch_import(dge1_o, DEtype="deseq2",geneTable=gt)
+mres1_o <- mitch_calc(m1_o, genesets, priority="effect")
+head(mres1_o$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in hypothalamus for OVA") %>%
+  kable_paper("hover", full_width = F)
+m1_o_top <- subset(mres1_o$enrichment_result,p.adjustANOVA<0.05)
+m1_o_up <- subset(m1_o_top,s.dist>0)$set
+m1_o_dn <- subset(m1_o_top,s.dist<0)$set
+mitch_report(mres1_o,outfile="mitch1_o.html",overwrite=TRUE)
+write.table(mres1_o$enrichment_result,file="mitch1_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m1_o_top_up <- head(subset(m1_o_top,s.dist>0),10)[,"s.dist"]
+names(m1_o_top_up) <- head(subset(m1_o_top,s.dist>0),10)[,"set"]
+m1_o_top_dn <- head(subset(m1_o_top,s.dist<0),10)[,"s.dist"]
+names(m1_o_top_dn) <- head(subset(m1_o_top,s.dist<0),10)[,"set"]
+m1_o_top_updn <- c(m1_o_top_up,m1_o_top_dn)
+m1_o_top_updn <- m1_o_top_updn[order(m1_o_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m1_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hypothalamus")
+grid()
+
+```
+
+Two dimensional mitch analysis.
+
+```{r,mitch1_2d}
+
+ml <- list("LPS"=dge1_l,"OVA"=dge1_o)
+m1 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m1)
+
+mres1 <- mitch_calc(m1, genesets, priority="effect")
+
+head(mres1$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in hypothalamus for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+m1_top <- subset(mres1$enrichment_result,p.adjustMANOVA<0.05)
+m1_up <- subset(m1_top,s.dist>0)$set
+m1_dn <- subset(m1_top,s.dist<0)$set
+mitch_report(mres1,outfile="mitch1.html",overwrite=TRUE)
+write.table(mres1$enrichment_result,file="mitch1.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m1_top_up <- head(subset(m1_top,s.dist>0),10)[,"s.dist"]
+names(m1_top_up) <- head(subset(m1_top,s.dist>0),10)[,"set"]
+m1_top_dn <- head(subset(m1_top,s.dist<0),10)[,"s.dist"]
+names(m1_top_dn) <- head(subset(m1_top,s.dist<0),10)[,"set"]
+m1_top_updn <- c(m1_top_up,m1_top_dn)
+m1_top_updn <- m1_top_updn[order(m1_top_updn)]
+
+# heatmap
+mr1 <- head(mres1$enrichment_result,30)
+mr1 <- as.matrix(mr1[,4:5])
+rownames(mr1) <- head(mres1$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
+
+```
+
+## Conclusion
+
+There was some variability among samples in the hypothalamus, resulting in no statistically significant findings.
+However the heatmap does show some potentially interesting patterns.
+The gene pathway analysis did show some differences.
+The mitch software can perform multi-contrast pathway analysis and will be important to contrast the effect of the treatment
+in different tissues.
+
+## References
+
+Bibliography
+
+1.      Babraham bioinformatics - FastQC A quality control tool for high throughput sequence data. Babraham.ac.uk, https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ (accessed February 23, 2022).
+
+2.      Frankish A, Diekhans M, Jungreis I, et al. GENCODE 2021. Nucleic Acids Res 2021; 49: D916–D923.
+
+3.      Jiang H, Lei R, Ding S-W, et al. Skewer: a fast and accurate adapter trimmer for next-generation sequencing paired-end reads. BMC Bioinformatics 2014; 15: 182.
+
+4.      Bray NL, Pimentel H, Melsted P, et al. Near-optimal probabilistic RNA-seq quantification. Nat Biotechnol 2016; 34: 525–527.
+
+5.      Ewels P, Magnusson M, Lundin S, et al. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics 2016; 32: 3047–3048.
+
+6.      Love MI, Huber W, Anders S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biol 2014; 15: 550.
+
+7.      Liberzon A, Birger C, Thorvaldsdóttir H, et al. The Molecular Signatures Database (MSigDB) hallmark gene set collection. Cell Syst 2015; 1: 417–425.
+
+8.      Jassal B, Matthews L, Viteri G, et al. The reactome pathway knowledgebase. Nucleic Acids Res 2020; 48: D498–D503.
+
+9.      Dolgalev I. MSigDB Gene Sets for Multiple Organisms in a Tidy Data Format [R package msigdbr version 7.4.1], https://cran.r-project.org/web/packages/msigdbr/index.html (2021, accessed February 23, 2022).
+
+10.     Kaspi A, Ziemann M. Mitch: Multi-contrast pathway enrichment for multi-omics and single-cell profiling data. BMC Genomics 2020; 21: 447.
+
+## Session information
+
+For reproducibility.
+
+```{r,sessioninfo}
+
+sessionInfo()
+
+```
