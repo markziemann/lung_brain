@@ -573,7 +573,7 @@ mymds <- function(de,name,myss,mx) {
 
 We show an MDS plot, MA plot, volcano plot, heatmap and table of top results for each contrast.
 
-```{deres1}
+```{r,deres1}
 
 mymds(de=dge1_l,name="Cont1: Effect of LPS treatment in hypothalamus",myss=ss1_l,mx=xx1_l)
 maplot(dge1_l,"Cont1: Effect of LPS treatment in hypothalamus")
@@ -595,7 +595,7 @@ dge1_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast
 
 ## Results for amygdala
 
-```{deres2}
+```{r,deres2}
 
 mymds(de=dge2_l,name="Cont2: Effect of LPS treatment in amygdala",myss=ss2_l,mx=xx2_l)
 maplot(dge2_l,"Cont2: Effect of LPS treatment in amygdala")
@@ -617,7 +617,7 @@ dge2_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast
 
 ## Results for hippocampus
 
-```{deres3}
+```{r,deres3}
 
 mymds(de=dge3_l,name="Cont3: Effect of LPS treatment in hippocampus",myss=ss3_l,mx=xx3_l)
 maplot(dge3_l,"Cont3: Effect of LPS treatment in hippocampus")
@@ -639,7 +639,7 @@ dge3_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast
 
 ## Results for PAG
 
-```{deres4}
+```{r,deres4}
 
 mymds(de=dge4_l,name="Cont4: Effect of LPS treatment in PAG",myss=ss4_l,mx=xx4_l)
 maplot(dge4_l,"Cont4: Effect of LPS treatment in PAG")
@@ -661,7 +661,7 @@ dge4_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast
 
 ## Results for NI
 
-```{deres5}
+```{r,deres5}
 
 mymds(de=dge5_l,name="Cont5: Effect of LPS treatment in NI",myss=ss5_l,mx=xx5_l)
 maplot(dge5_l,"Cont5: Effect of LPS treatment in NI")
