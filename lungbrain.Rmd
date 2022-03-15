@@ -721,7 +721,9 @@ plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on 
 
 ```
 
-## Single contrast pathway analysis with mitch
+## Mitch pathway analysis in hyp
+
+Gene sets are obtained from Reactome.
 
 Firstly need to conduct mitch enrichment analysis for each contrast separately.
 
@@ -753,7 +755,7 @@ head(mres1_l$enrichment_result,20) %>%
 m1_l_top <- subset(mres1_l$enrichment_result,p.adjustANOVA<0.05)
 m1_l_up <- subset(m1_l_top,s.dist>0)$set
 m1_l_dn <- subset(m1_l_top,s.dist<0)$set
-mitch_report(mres1_l,outfile="mitch1_l.html",overwrite=TRUE)
+#mitch_report(mres1_l,outfile="mitch1_l.html",overwrite=TRUE)
 write.table(mres1_l$enrichment_result,file="mitch1_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m1_l_top_up <- head(subset(m1_l_top,s.dist>0),10)[,"s.dist"]
@@ -783,7 +785,7 @@ head(mres1_o$enrichment_result,20) %>%
 m1_o_top <- subset(mres1_o$enrichment_result,p.adjustANOVA<0.05)
 m1_o_up <- subset(m1_o_top,s.dist>0)$set
 m1_o_dn <- subset(m1_o_top,s.dist<0)$set
-mitch_report(mres1_o,outfile="mitch1_o.html",overwrite=TRUE)
+#mitch_report(mres1_o,outfile="mitch1_o.html",overwrite=TRUE)
 write.table(mres1_o$enrichment_result,file="mitch1_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m1_o_top_up <- head(subset(m1_o_top,s.dist>0),10)[,"s.dist"]
@@ -801,7 +803,7 @@ grid()
 
 ```
 
-Two dimensional mitch analysis.
+Two dimensional mitch analysis in hyp.
 
 ```{r,mitch1_2d}
 
@@ -817,7 +819,7 @@ head(mres1$enrichment_result,20) %>%
 m1_top <- subset(mres1$enrichment_result,p.adjustMANOVA<0.05)
 m1_up <- subset(m1_top,s.dist>0)$set
 m1_dn <- subset(m1_top,s.dist<0)$set
-mitch_report(mres1,outfile="mitch1.html",overwrite=TRUE)
+#mitch_report(mres1,outfile="mitch1.html",overwrite=TRUE)
 write.table(mres1$enrichment_result,file="mitch1.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m1_top_up <- head(subset(m1_top,s.dist>0),10)[,"s.dist"]
@@ -838,6 +840,494 @@ heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cex
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
 
 ```
+
+## Mitch pathway analysis in amygdala
+
+Mitch for LPS in amy
+
+```{r,mitch 2 lps}
+
+m2_l <- mitch_import(dge2_l, DEtype="deseq2",geneTable=gt)
+mres2_l <- mitch_calc(m2_l, genesets, priority="effect")
+head(mres2_l$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in amy for LPS") %>%
+  kable_paper("hover", full_width = F)
+m2_l_top <- subset(mres2_l$enrichment_result,p.adjustANOVA<0.05)
+m2_l_up <- subset(m2_l_top,s.dist>0)$set
+m2_l_dn <- subset(m2_l_top,s.dist<0)$set
+#mitch_report(mres2_l,outfile="mitch2_l.html",overwrite=TRUE)
+write.table(mres2_l$enrichment_result,file="mitch2_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m2_l_top_up <- head(subset(m2_l_top,s.dist>0),10)[,"s.dist"]
+names(m2_l_top_up) <- head(subset(m2_l_top,s.dist>0),10)[,"set"]
+m2_l_top_dn <- head(subset(m2_l_top,s.dist<0),10)[,"s.dist"]
+names(m2_l_top_dn) <- head(subset(m2_l_top,s.dist<0),10)[,"set"]
+m2_l_top_updn <- c(m2_l_top_up,m2_l_top_dn)
+m2_l_top_updn <- m2_l_top_updn[order(m2_l_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m2_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in amy")
+grid()
+
+```
+
+Mitch for OVA in amy
+
+```{r,mitch 2 ova}
+
+m2_o <- mitch_import(dge2_o, DEtype="deseq2",geneTable=gt)
+mres2_o <- mitch_calc(m2_o, genesets, priority="effect")
+head(mres2_o$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in amy for OVA") %>%
+  kable_paper("hover", full_width = F)
+m2_o_top <- subset(mres2_o$enrichment_result,p.adjustANOVA<0.05)
+m2_o_up <- subset(m2_o_top,s.dist>0)$set
+m2_o_dn <- subset(m2_o_top,s.dist<0)$set
+#mitch_report(mres2_o,outfile="mitch2_o.html",overwrite=TRUE)
+write.table(mres2_o$enrichment_result,file="mitch2_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m2_o_top_up <- head(subset(m2_o_top,s.dist>0),10)[,"s.dist"]
+names(m2_o_top_up) <- head(subset(m2_o_top,s.dist>0),10)[,"set"]
+m2_o_top_dn <- head(subset(m2_o_top,s.dist<0),10)[,"s.dist"]
+names(m2_o_top_dn) <- head(subset(m2_o_top,s.dist<0),10)[,"set"]
+m2_o_top_updn <- c(m2_o_top_up,m2_o_top_dn)
+m2_o_top_updn <- m2_o_top_updn[order(m2_o_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m2_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in amy")
+grid()
+
+```
+
+Two dimensional mitch analysis in amy.
+
+```{r,mitch2_2d}
+
+ml <- list("LPS"=dge2_l,"OVA"=dge2_o)
+m2 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m2)
+
+mres2 <- mitch_calc(m2, genesets, priority="effect")
+
+head(mres2$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in amy for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+m2_top <- subset(mres2$enrichment_result,p.adjustMANOVA<0.05)
+m2_up <- subset(m2_top,s.dist>0)$set
+m2_dn <- subset(m2_top,s.dist<0)$set
+#mitch_report(mres2,outfile="mitch2.html",overwrite=TRUE)
+write.table(mres2$enrichment_result,file="mitch2.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m2_top_up <- head(subset(m2_top,s.dist>0),10)[,"s.dist"]
+names(m2_top_up) <- head(subset(m2_top,s.dist>0),10)[,"set"]
+m2_top_dn <- head(subset(m2_top,s.dist<0),10)[,"s.dist"]
+names(m2_top_dn) <- head(subset(m2_top,s.dist<0),10)[,"set"]
+m2_top_updn <- c(m2_top_up,m2_top_dn)
+m2_top_updn <- m2_top_updn[order(m2_top_updn)]
+
+# heatmap
+mr2 <- head(mres2$enrichment_result,30)
+mr2 <- as.matrix(mr2[,4:5])
+rownames(mr2) <- head(mres2$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr2,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in amy" , cexCol=0.9 )
+
+```
+
+## Mitch pathway analysis in hippocampus
+
+Mitch for LPS in hip
+
+```{r,mitch 3 lps}
+
+m3_l <- mitch_import(dge3_l, DEtype="deseq2",geneTable=gt)
+mres3_l <- mitch_calc(m3_l, genesets, priority="effect")
+head(mres3_l$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in hip for LPS") %>%
+  kable_paper("hover", full_width = F)
+m3_l_top <- subset(mres3_l$enrichment_result,p.adjustANOVA<0.05)
+m3_l_up <- subset(m3_l_top,s.dist>0)$set
+m3_l_dn <- subset(m3_l_top,s.dist<0)$set
+#mitch_report(mres3_l,outfile="mitch3_l.html",overwrite=TRUE)
+write.table(mres3_l$enrichment_result,file="mitch3_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m3_l_top_up <- head(subset(m3_l_top,s.dist>0),10)[,"s.dist"]
+names(m3_l_top_up) <- head(subset(m3_l_top,s.dist>0),10)[,"set"]
+m3_l_top_dn <- head(subset(m3_l_top,s.dist<0),10)[,"s.dist"]
+names(m3_l_top_dn) <- head(subset(m3_l_top,s.dist<0),10)[,"set"]
+m3_l_top_updn <- c(m3_l_top_up,m3_l_top_dn)
+m3_l_top_updn <- m3_l_top_updn[order(m3_l_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m3_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hip")
+grid()
+
+```
+
+Mitch for OVA in hip
+
+```{r,mitch 3 ova}
+
+m3_o <- mitch_import(dge2_o, DEtype="deseq2",geneTable=gt)
+mres3_o <- mitch_calc(m3_o, genesets, priority="effect")
+head(mres3_o$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in hip for OVA") %>%
+  kable_paper("hover", full_width = F)
+m3_o_top <- subset(mres3_o$enrichment_result,p.adjustANOVA<0.05)
+m3_o_up <- subset(m3_o_top,s.dist>0)$set
+m3_o_dn <- subset(m3_o_top,s.dist<0)$set
+#mitch_report(mres3_o,outfile="mitch3_o.html",overwrite=TRUE)
+write.table(mres3_o$enrichment_result,file="mitch3_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m3_o_top_up <- head(subset(m3_o_top,s.dist>0),10)[,"s.dist"]
+names(m3_o_top_up) <- head(subset(m3_o_top,s.dist>0),10)[,"set"]
+m3_o_top_dn <- head(subset(m3_o_top,s.dist<0),10)[,"s.dist"]
+names(m3_o_top_dn) <- head(subset(m3_o_top,s.dist<0),10)[,"set"]
+m3_o_top_updn <- c(m3_o_top_up,m3_o_top_dn)
+m3_o_top_updn <- m3_o_top_updn[order(m3_o_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m3_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hip")
+grid()
+
+```
+
+Two dimensional mitch analysis in hip.
+
+```{r,mitch3_2d}
+
+ml <- list("LPS"=dge3_l,"OVA"=dge3_o)
+m3 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m3)
+
+mres3 <- mitch_calc(m3, genesets, priority="effect")
+
+head(mres3$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in hip for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+m3_top <- subset(mres3$enrichment_result,p.adjustMANOVA<0.05)
+m3_up <- subset(m3_top,s.dist>0)$set
+m3_dn <- subset(m3_top,s.dist<0)$set
+#mitch_report(mres3,outfile="mitch3.html",overwrite=TRUE)
+write.table(mres3$enrichment_result,file="mitch3.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m3_top_up <- head(subset(m3_top,s.dist>0),10)[,"s.dist"]
+names(m3_top_up) <- head(subset(m3_top,s.dist>0),10)[,"set"]
+m3_top_dn <- head(subset(m3_top,s.dist<0),10)[,"s.dist"]
+names(m3_top_dn) <- head(subset(m3_top,s.dist<0),10)[,"set"]
+m3_top_updn <- c(m3_top_up,m3_top_dn)
+m3_top_updn <- m3_top_updn[order(m3_top_updn)]
+
+# heatmap
+mr3 <- head(mres3$enrichment_result,30)
+mr3 <- as.matrix(mr3[,4:5])
+rownames(mr3) <- head(mres3$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr3,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in hip" , cexCol=0.9 )
+
+```
+
+## Mitch pathway analysis in PAG
+
+Mitch for LPS in pag
+
+```{r,mitch 4 lps}
+
+m4_l <- mitch_import(dge4_l, DEtype="deseq2",geneTable=gt)
+mres4_l <- mitch_calc(m4_l, genesets, priority="effect")
+head(mres4_l$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in pag for LPS") %>%
+  kable_paper("hover", full_width = F)
+m4_l_top <- subset(mres4_l$enrichment_result,p.adjustANOVA<0.05)
+m4_l_up <- subset(m4_l_top,s.dist>0)$set
+m4_l_dn <- subset(m4_l_top,s.dist<0)$set
+#mitch_report(mres4_l,outfile="mitch4_l.html",overwrite=TRUE)
+write.table(mres3_l$enrichment_result,file="mitch4_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m4_l_top_up <- head(subset(m4_l_top,s.dist>0),10)[,"s.dist"]
+names(m4_l_top_up) <- head(subset(m4_l_top,s.dist>0),10)[,"set"]
+m4_l_top_dn <- head(subset(m4_l_top,s.dist<0),10)[,"s.dist"]
+names(m4_l_top_dn) <- head(subset(m4_l_top,s.dist<0),10)[,"set"]
+m4_l_top_updn <- c(m4_l_top_up,m4_l_top_dn)
+m4_l_top_updn <- m4_l_top_updn[order(m4_l_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m4_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in pag")
+grid()
+
+```
+
+Mitch for OVA in pag
+
+```{r,mitch 4 ova}
+
+m4_o <- mitch_import(dge4_o, DEtype="deseq2",geneTable=gt)
+mres4_o <- mitch_calc(m4_o, genesets, priority="effect")
+head(mres4_o$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in pag for OVA") %>%
+  kable_paper("hover", full_width = F)
+m4_o_top <- subset(mres4_o$enrichment_result,p.adjustANOVA<0.05)
+m4_o_up <- subset(m4_o_top,s.dist>0)$set
+m4_o_dn <- subset(m4_o_top,s.dist<0)$set
+#mitch_report(mres4_o,outfile="mitch4_o.html",overwrite=TRUE)
+write.table(mres4_o$enrichment_result,file="mitch4_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m4_o_top_up <- head(subset(m4_o_top,s.dist>0),10)[,"s.dist"]
+names(m4_o_top_up) <- head(subset(m4_o_top,s.dist>0),10)[,"set"]
+m4_o_top_dn <- head(subset(m4_o_top,s.dist<0),10)[,"s.dist"]
+names(m4_o_top_dn) <- head(subset(m4_o_top,s.dist<0),10)[,"set"]
+m4_o_top_updn <- c(m4_o_top_up,m4_o_top_dn)
+m4_o_top_updn <- m4_o_top_updn[order(m4_o_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m4_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in pag")
+grid()
+
+```
+
+Two dimensional mitch analysis in pag.
+
+```{r,mitch4_2d}
+
+ml <- list("LPS"=dge4_l,"OVA"=dge4_o)
+m4 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m4)
+
+mres4 <- mitch_calc(m4, genesets, priority="effect")
+
+head(mres4$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in pag for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+m4_top <- subset(mres4$enrichment_result,p.adjustMANOVA<0.05)
+m4_up <- subset(m4_top,s.dist>0)$set
+m4_dn <- subset(m4_top,s.dist<0)$set
+#mitch_report(mres4,outfile="mitch4.html",overwrite=TRUE)
+write.table(mres4$enrichment_result,file="mitch4.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m4_top_up <- head(subset(m4_top,s.dist>0),10)[,"s.dist"]
+names(m4_top_up) <- head(subset(m4_top,s.dist>0),10)[,"set"]
+m4_top_dn <- head(subset(m4_top,s.dist<0),10)[,"s.dist"]
+names(m4_top_dn) <- head(subset(m4_top,s.dist<0),10)[,"set"]
+m4_top_updn <- c(m4_top_up,m4_top_dn)
+m4_top_updn <- m4_top_updn[order(m4_top_updn)]
+
+# heatmap
+mr4 <- head(mres4$enrichment_result,30)
+mr4 <- as.matrix(mr4[,4:5])
+rownames(mr4) <- head(mres4$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr4,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in pag" , cexCol=0.9 )
+
+```
+
+## Mitch pathway analysis in NI
+
+Mitch for LPS in NI
+
+```{r,mitch 5 lps}
+
+m2_l <- mitch_import(dge2_l, DEtype="deseq2",geneTable=gt)
+mres2_l <- mitch_calc(m2_l, genesets, priority="effect")
+head(mres2_l$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in NI for LPS") %>%
+  kable_paper("hover", full_width = F)
+m2_l_top <- subset(mres2_l$enrichment_result,p.adjustANOVA<0.05)
+m2_l_up <- subset(m2_l_top,s.dist>0)$set
+m2_l_dn <- subset(m2_l_top,s.dist<0)$set
+#mitch_report(mres2_l,outfile="mitch2_l.html",overwrite=TRUE)
+write.table(mres2_l$enrichment_result,file="mitch2_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m2_l_top_up <- head(subset(m2_l_top,s.dist>0),10)[,"s.dist"]
+names(m2_l_top_up) <- head(subset(m2_l_top,s.dist>0),10)[,"set"]
+m2_l_top_dn <- head(subset(m2_l_top,s.dist<0),10)[,"s.dist"]
+names(m2_l_top_dn) <- head(subset(m2_l_top,s.dist<0),10)[,"set"]
+m2_l_top_updn <- c(m2_l_top_up,m2_l_top_dn)
+m2_l_top_updn <- m2_l_top_updn[order(m2_l_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m2_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in NI")
+grid()
+
+```
+
+Mitch for OVA in NI
+
+```{r,mitch 5 ova}
+
+m5_o <- mitch_import(dge5_o, DEtype="deseq2",geneTable=gt)
+mres5_o <- mitch_calc(m5_o, genesets, priority="effect")
+head(mres5_o$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in NI for OVA") %>%
+  kable_paper("hover", full_width = F)
+m5_o_top <- subset(mres5_o$enrichment_result,p.adjustANOVA<0.05)
+m5_o_up <- subset(m5_o_top,s.dist>0)$set
+m5_o_dn <- subset(m5_o_top,s.dist<0)$set
+#mitch_report(mres5_o,outfile="mitch5_o.html",overwrite=TRUE)
+write.table(mres5_o$enrichment_result,file="mitch5_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m5_o_top_up <- head(subset(m5_o_top,s.dist>0),10)[,"s.dist"]
+names(m5_o_top_up) <- head(subset(m5_o_top,s.dist>0),10)[,"set"]
+m5_o_top_dn <- head(subset(m5_o_top,s.dist<0),10)[,"s.dist"]
+names(m5_o_top_dn) <- head(subset(m5_o_top,s.dist<0),10)[,"set"]
+m5_o_top_updn <- c(m5_o_top_up,m5_o_top_dn)
+m5_o_top_updn <- m5_o_top_updn[order(m5_o_top_updn)]
+
+par(mar=c(5,25,3,1))
+barplot(m5_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in NI")
+grid()
+
+```
+
+Two dimensional mitch analysis in NI.
+
+```{r,mitch5_2d}
+
+ml <- list("LPS"=dge5_l,"OVA"=dge5_o)
+m5 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m5)
+
+mres5 <- mitch_calc(m5, genesets, priority="effect")
+
+head(mres5$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in NI for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+m5_top <- subset(mres5$enrichment_result,p.adjustMANOVA<0.05)
+m5_up <- subset(m5_top,s.dist>0)$set
+m5_dn <- subset(m5_top,s.dist<0)$set
+#mitch_report(mres5,outfile="mitch5.html",overwrite=TRUE)
+write.table(mres5$enrichment_result,file="mitch5.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m5_top_up <- head(subset(m5_top,s.dist>0),10)[,"s.dist"]
+names(m5_top_up) <- head(subset(m5_top,s.dist>0),10)[,"set"]
+m5_top_dn <- head(subset(m5_top,s.dist<0),10)[,"s.dist"]
+names(m5_top_dn) <- head(subset(m5_top,s.dist<0),10)[,"set"]
+m5_top_updn <- c(m5_top_up,m5_top_dn)
+m5_top_updn <- m5_top_updn[order(m5_top_updn)]
+
+# heatmap
+mr5 <- head(mres5$enrichment_result,30)
+mr5 <- as.matrix(mr5[,4:5])
+rownames(mr5) <- head(mres5$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr5,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in NI" , cexCol=0.9 )
+
+```
+
+## Mitch pathway analysis - LPS all tissues
+
+```{r,mitch all lps}
+
+ml <- list("hyp"=dge1_l,
+  "amy"=dge2_l,
+  "hip"=dge3_l, 
+  "pag"=dge4_l, 
+  "ni"=dge5_l)
+
+m6 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m6)
+
+mres6 <- mitch_calc(m6, genesets, priority="effect")
+
+head(mres6$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in all tissues caused by LPS") %>%
+  kable_paper("hover", full_width = F)
+m6_top <- subset(mres6$enrichment_result,p.adjustMANOVA<0.05)
+m6_up <- subset(m6_top,s.dist>0)$set
+m6_dn <- subset(m6_top,s.dist<0)$set
+#mitch_report(mres6,outfile="mitch6.html",overwrite=TRUE)
+write.table(mres6$enrichment_result,file="mitch6.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m6_top_up <- head(subset(m6_top,s.dist>0),10)[,"s.dist"]
+names(m6_top_up) <- head(subset(m6_top,s.dist>0),10)[,"set"]
+m6_top_dn <- head(subset(m6_top,s.dist<0),10)[,"s.dist"]
+names(m6_top_dn) <- head(subset(m6_top,s.dist<0),10)[,"set"]
+m6_top_updn <- c(m6_top_up,m6_top_dn)
+m6_top_updn <- m6_top_updn[order(m6_top_updn)]
+
+# heatmap
+mr6 <- head(mres6$enrichment_result,30)
+mr6 <- as.matrix(mr6[,4:8])
+rownames(mr6) <- head(mres6$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr6,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways LPS all tissues" , cexCol=0.9 )
+
+```
+
+##  Mitch pathway analysis - OVA all tissues
+
+```{r,mitch all ova}
+
+ml <- list("hyp"=dge1_o,
+  "amy"=dge2_o,
+  "hip"=dge3_o,
+  "pag"=dge4_o,
+  "ni"=dge5_o)
+
+m7 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m7)
+
+mres7 <- mitch_calc(m7, genesets, priority="effect")
+
+head(mres7$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in all tissues caused by OVA") %>%
+  kable_paper("hover", full_width = F)
+m7_top <- subset(mres7$enrichment_result,p.adjustMANOVA<0.05)
+m7_up <- subset(m7_top,s.dist>0)$set
+m7_dn <- subset(m7_top,s.dist<0)$set
+#mitch_report(mres7,outfile="mitch7.html",overwrite=TRUE)
+write.table(mres7$enrichment_result,file="mitch7.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m7_top_up <- head(subset(m7_top,s.dist>0),10)[,"s.dist"]
+names(m7_top_up) <- head(subset(m7_top,s.dist>0),10)[,"set"]
+m7_top_dn <- head(subset(m7_top,s.dist<0),10)[,"s.dist"]
+names(m7_top_dn) <- head(subset(m7_top,s.dist<0),10)[,"set"]
+m7_top_updn <- c(m7_top_up,m7_top_dn)
+m7_top_updn <- m7_top_updn[order(m7_top_updn)]
+
+# heatmap
+mr7 <- head(mres7$enrichment_result,30)
+mr7 <- as.matrix(mr7[,4:8])
+rownames(mr7) <- head(mres7$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr7,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways OVA all tissues" , cexCol=0.9 )
+
+```
+
+
 
 ## Conclusion
 
