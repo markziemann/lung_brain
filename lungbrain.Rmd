@@ -317,6 +317,106 @@ lapply(l,dim)
 
 ```
 
+```{r,mds2}
+
+par(mar=c(5.1,4.1,4.1,2.1))
+
+# hyp 1
+mds <- cmdscale(dist(t(xx1)))
+cols <- as.numeric(factor(ss1$Treatment))+1
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# Sample 3.1à has high rRNA content
+# Sample 9.1à no problem in its QC but will look for other explanation
+rpm1m <- rowMeans(rpm1)
+de1_inv <- data.frame(rpm1$EA9-1 , rpm1m )
+colnames(de1_inv) <- c("ea9.1","mean")
+de1_inv$ratio <- de1_inv$ea9.1 / de1_inv$mean
+de1_inv <- de1_inv[order(-de1_inv$ratio),]
+head(de1_inv,20)
+
+```
+
+Remove 3.1 as it has high rRNA content.
+Sample 9.1 appears as possible outlier, but no obvious reason to exclude it from the analysis.
+EG no problem with QC and no gene expression profile features that indicate tissue contamination.
+
+Then repeat the MDS.
+
+```{r,mds2b}
+
+ss1 <- ss1[rownames(ss1)!="EA3-1",]
+xx1 <- xx1[,colnames(xx1) %in% rownames(ss1)]
+
+# hyp 1
+mds <- cmdscale(dist(t(xx1)))
+cols <- as.numeric(factor(ss1$Treatment))+1
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+
+```
+
+```{r,mds3}
+
+# amy 2
+mds <- cmdscale(dist(t(xx2)))
+cols <- as.numeric(factor(ss2$Treatment))+1
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# hip 3
+mds <- cmdscale(dist(t(xx3)))
+cols <- as.numeric(factor(ss3$Treatment))+1
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# pag 4
+mds <- cmdscale(dist(t(xx4)))
+cols <- as.numeric(factor(ss4$Treatment))+1
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "pag")
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# ni 5
+mds <- cmdscale(dist(t(xx5)))
+cols <- as.numeric(factor(ss5$Treatment))+1
+
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "ni")
+text(mds, labels=rownames(mds) ,col="black")
+
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+```
+
+
 ## Differential expression with DESeq2
 
 For each brain region, there are two treatments, and so two contrasts are performed.
@@ -755,7 +855,7 @@ head(mres1_l$enrichment_result,20) %>%
 m1_l_top <- subset(mres1_l$enrichment_result,p.adjustANOVA<0.05)
 m1_l_up <- subset(m1_l_top,s.dist>0)$set
 m1_l_dn <- subset(m1_l_top,s.dist<0)$set
-#mitch_report(mres1_l,outfile="mitch1_l.html",overwrite=TRUE)
+mitch_report(mres1_l,outfile="mitch1_l.html",overwrite=TRUE)
 write.table(mres1_l$enrichment_result,file="mitch1_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m1_l_top_up <- head(subset(m1_l_top,s.dist>0),10)[,"s.dist"]
@@ -785,7 +885,7 @@ head(mres1_o$enrichment_result,20) %>%
 m1_o_top <- subset(mres1_o$enrichment_result,p.adjustANOVA<0.05)
 m1_o_up <- subset(m1_o_top,s.dist>0)$set
 m1_o_dn <- subset(m1_o_top,s.dist<0)$set
-#mitch_report(mres1_o,outfile="mitch1_o.html",overwrite=TRUE)
+mitch_report(mres1_o,outfile="mitch1_o.html",overwrite=TRUE)
 write.table(mres1_o$enrichment_result,file="mitch1_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m1_o_top_up <- head(subset(m1_o_top,s.dist>0),10)[,"s.dist"]
@@ -805,6 +905,16 @@ grid()
 
 Two dimensional mitch analysis in hyp.
 
+Need to make a scatterplot to highlight the following:
+
+* Serotonin Neurotransmitter Release Cycle (DN)
+* Class C3 metabotropic glutamate pheromone receptors (DN)
+* Regulation of commissural axon pathfinding by SLIT AND robo (DN)
+* Reduction of Cytosolic Ca (DN)
+* YAP1 and WWTR1 TAZ STIMULATED GENE EXPRESSION (UP)
+* Activation of the mRNA upon binding (UP)
+* Regulation of expression of slits and robs (UP)
+
 ```{r,mitch1_2d}
 
 ml <- list("LPS"=dge1_l,"OVA"=dge1_o)
@@ -819,7 +929,7 @@ head(mres1$enrichment_result,20) %>%
 m1_top <- subset(mres1$enrichment_result,p.adjustMANOVA<0.05)
 m1_up <- subset(m1_top,s.dist>0)$set
 m1_dn <- subset(m1_top,s.dist<0)$set
-#mitch_report(mres1,outfile="mitch1.html",overwrite=TRUE)
+mitch_report(mres1,outfile="mitch1.html",overwrite=TRUE)
 write.table(mres1$enrichment_result,file="mitch1.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m1_top_up <- head(subset(m1_top,s.dist>0),10)[,"s.dist"]
@@ -828,6 +938,85 @@ m1_top_dn <- head(subset(m1_top,s.dist<0),10)[,"s.dist"]
 names(m1_top_dn) <- head(subset(m1_top,s.dist<0),10)[,"set"]
 m1_top_updn <- c(m1_top_up,m1_top_dn)
 m1_top_updn <- m1_top_updn[order(m1_top_updn)]
+
+```
+
+Need to make a scatterplot to highlight the following:
+
+* Serotonin Neurotransmitter Release Cycle (DN)
+* Class C3 metabotropic glutamate pheromone receptors (DN)
+* Regulation of commissural axon pathfinding by SLIT AND robo (DN)
+* Reduction of Cytosolic Ca (DN)
+* YAP1 and WWTR1 TAZ STIMULATED GENE EXPRESSION (UP)
+* Activation of the mRNA upon binding (UP)
+* Regulation of expression of slits and robs (UP)
+
+```{r,mitch1_scatter}
+
+a <- mres1$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+pdf("mitch1_scatter.pdf")
+
+a <- mres1$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQU
+ENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+dev.off()
+
+```
+
+```{r,mitch1_tbl}
+
+subset(as,s.LPS>0.2 & s.OVA>0.2)  %>%
+  kbl(caption = "Pathways upregulated in LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+
+subset(as,s.LPS<-0.2 & s.OVA<0.2)  %>%
+  kbl(caption = "Pathways downregulated in LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
 
 # heatmap
 mr1 <- head(mres1$enrichment_result,30)
@@ -855,7 +1044,7 @@ head(mres2_l$enrichment_result,20) %>%
 m2_l_top <- subset(mres2_l$enrichment_result,p.adjustANOVA<0.05)
 m2_l_up <- subset(m2_l_top,s.dist>0)$set
 m2_l_dn <- subset(m2_l_top,s.dist<0)$set
-#mitch_report(mres2_l,outfile="mitch2_l.html",overwrite=TRUE)
+mitch_report(mres2_l,outfile="mitch2_l.html",overwrite=TRUE)
 write.table(mres2_l$enrichment_result,file="mitch2_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m2_l_top_up <- head(subset(m2_l_top,s.dist>0),10)[,"s.dist"]
@@ -885,7 +1074,7 @@ head(mres2_o$enrichment_result,20) %>%
 m2_o_top <- subset(mres2_o$enrichment_result,p.adjustANOVA<0.05)
 m2_o_up <- subset(m2_o_top,s.dist>0)$set
 m2_o_dn <- subset(m2_o_top,s.dist<0)$set
-#mitch_report(mres2_o,outfile="mitch2_o.html",overwrite=TRUE)
+mitch_report(mres2_o,outfile="mitch2_o.html",overwrite=TRUE)
 write.table(mres2_o$enrichment_result,file="mitch2_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m2_o_top_up <- head(subset(m2_o_top,s.dist>0),10)[,"s.dist"]
@@ -919,7 +1108,7 @@ head(mres2$enrichment_result,20) %>%
 m2_top <- subset(mres2$enrichment_result,p.adjustMANOVA<0.05)
 m2_up <- subset(m2_top,s.dist>0)$set
 m2_dn <- subset(m2_top,s.dist<0)$set
-#mitch_report(mres2,outfile="mitch2.html",overwrite=TRUE)
+mitch_report(mres2,outfile="mitch2.html",overwrite=TRUE)
 write.table(mres2$enrichment_result,file="mitch2.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m2_top_up <- head(subset(m2_top,s.dist>0),10)[,"s.dist"]
@@ -955,7 +1144,7 @@ head(mres3_l$enrichment_result,20) %>%
 m3_l_top <- subset(mres3_l$enrichment_result,p.adjustANOVA<0.05)
 m3_l_up <- subset(m3_l_top,s.dist>0)$set
 m3_l_dn <- subset(m3_l_top,s.dist<0)$set
-#mitch_report(mres3_l,outfile="mitch3_l.html",overwrite=TRUE)
+mitch_report(mres3_l,outfile="mitch3_l.html",overwrite=TRUE)
 write.table(mres3_l$enrichment_result,file="mitch3_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m3_l_top_up <- head(subset(m3_l_top,s.dist>0),10)[,"s.dist"]
@@ -985,7 +1174,7 @@ head(mres3_o$enrichment_result,20) %>%
 m3_o_top <- subset(mres3_o$enrichment_result,p.adjustANOVA<0.05)
 m3_o_up <- subset(m3_o_top,s.dist>0)$set
 m3_o_dn <- subset(m3_o_top,s.dist<0)$set
-#mitch_report(mres3_o,outfile="mitch3_o.html",overwrite=TRUE)
+mitch_report(mres3_o,outfile="mitch3_o.html",overwrite=TRUE)
 write.table(mres3_o$enrichment_result,file="mitch3_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m3_o_top_up <- head(subset(m3_o_top,s.dist>0),10)[,"s.dist"]
@@ -1019,7 +1208,7 @@ head(mres3$enrichment_result,20) %>%
 m3_top <- subset(mres3$enrichment_result,p.adjustMANOVA<0.05)
 m3_up <- subset(m3_top,s.dist>0)$set
 m3_dn <- subset(m3_top,s.dist<0)$set
-#mitch_report(mres3,outfile="mitch3.html",overwrite=TRUE)
+mitch_report(mres3,outfile="mitch3.html",overwrite=TRUE)
 write.table(mres3$enrichment_result,file="mitch3.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m3_top_up <- head(subset(m3_top,s.dist>0),10)[,"s.dist"]
@@ -1055,7 +1244,7 @@ head(mres4_l$enrichment_result,20) %>%
 m4_l_top <- subset(mres4_l$enrichment_result,p.adjustANOVA<0.05)
 m4_l_up <- subset(m4_l_top,s.dist>0)$set
 m4_l_dn <- subset(m4_l_top,s.dist<0)$set
-#mitch_report(mres4_l,outfile="mitch4_l.html",overwrite=TRUE)
+mitch_report(mres4_l,outfile="mitch4_l.html",overwrite=TRUE)
 write.table(mres3_l$enrichment_result,file="mitch4_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m4_l_top_up <- head(subset(m4_l_top,s.dist>0),10)[,"s.dist"]
@@ -1085,7 +1274,7 @@ head(mres4_o$enrichment_result,20) %>%
 m4_o_top <- subset(mres4_o$enrichment_result,p.adjustANOVA<0.05)
 m4_o_up <- subset(m4_o_top,s.dist>0)$set
 m4_o_dn <- subset(m4_o_top,s.dist<0)$set
-#mitch_report(mres4_o,outfile="mitch4_o.html",overwrite=TRUE)
+mitch_report(mres4_o,outfile="mitch4_o.html",overwrite=TRUE)
 write.table(mres4_o$enrichment_result,file="mitch4_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m4_o_top_up <- head(subset(m4_o_top,s.dist>0),10)[,"s.dist"]
@@ -1119,7 +1308,7 @@ head(mres4$enrichment_result,20) %>%
 m4_top <- subset(mres4$enrichment_result,p.adjustMANOVA<0.05)
 m4_up <- subset(m4_top,s.dist>0)$set
 m4_dn <- subset(m4_top,s.dist<0)$set
-#mitch_report(mres4,outfile="mitch4.html",overwrite=TRUE)
+mitch_report(mres4,outfile="mitch4.html",overwrite=TRUE)
 write.table(mres4$enrichment_result,file="mitch4.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m4_top_up <- head(subset(m4_top,s.dist>0),10)[,"s.dist"]
@@ -1155,7 +1344,7 @@ head(mres2_l$enrichment_result,20) %>%
 m2_l_top <- subset(mres2_l$enrichment_result,p.adjustANOVA<0.05)
 m2_l_up <- subset(m2_l_top,s.dist>0)$set
 m2_l_dn <- subset(m2_l_top,s.dist<0)$set
-#mitch_report(mres2_l,outfile="mitch2_l.html",overwrite=TRUE)
+mitch_report(mres2_l,outfile="mitch2_l.html",overwrite=TRUE)
 write.table(mres2_l$enrichment_result,file="mitch2_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m2_l_top_up <- head(subset(m2_l_top,s.dist>0),10)[,"s.dist"]
@@ -1185,7 +1374,7 @@ head(mres5_o$enrichment_result,20) %>%
 m5_o_top <- subset(mres5_o$enrichment_result,p.adjustANOVA<0.05)
 m5_o_up <- subset(m5_o_top,s.dist>0)$set
 m5_o_dn <- subset(m5_o_top,s.dist<0)$set
-#mitch_report(mres5_o,outfile="mitch5_o.html",overwrite=TRUE)
+mitch_report(mres5_o,outfile="mitch5_o.html",overwrite=TRUE)
 write.table(mres5_o$enrichment_result,file="mitch5_o.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m5_o_top_up <- head(subset(m5_o_top,s.dist>0),10)[,"s.dist"]
@@ -1219,7 +1408,7 @@ head(mres5$enrichment_result,20) %>%
 m5_top <- subset(mres5$enrichment_result,p.adjustMANOVA<0.05)
 m5_up <- subset(m5_top,s.dist>0)$set
 m5_dn <- subset(m5_top,s.dist<0)$set
-#mitch_report(mres5,outfile="mitch5.html",overwrite=TRUE)
+mitch_report(mres5,outfile="mitch5.html",overwrite=TRUE)
 write.table(mres5$enrichment_result,file="mitch5.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m5_top_up <- head(subset(m5_top,s.dist>0),10)[,"s.dist"]
@@ -1262,7 +1451,7 @@ head(mres6$enrichment_result,20) %>%
 m6_top <- subset(mres6$enrichment_result,p.adjustMANOVA<0.05)
 m6_up <- subset(m6_top,s.dist>0)$set
 m6_dn <- subset(m6_top,s.dist<0)$set
-#mitch_report(mres6,outfile="mitch6.html",overwrite=TRUE)
+mitch_report(mres6,outfile="mitch6.html",overwrite=TRUE)
 write.table(mres6$enrichment_result,file="mitch6.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m6_top_up <- head(subset(m6_top,s.dist>0),10)[,"s.dist"]
@@ -1305,7 +1494,7 @@ head(mres7$enrichment_result,20) %>%
 m7_top <- subset(mres7$enrichment_result,p.adjustMANOVA<0.05)
 m7_up <- subset(m7_top,s.dist>0)$set
 m7_dn <- subset(m7_top,s.dist<0)$set
-#mitch_report(mres7,outfile="mitch7.html",overwrite=TRUE)
+mitch_report(mres7,outfile="mitch7.html",overwrite=TRUE)
 write.table(mres7$enrichment_result,file="mitch7.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m7_top_up <- head(subset(m7_top,s.dist>0),10)[,"s.dist"]
