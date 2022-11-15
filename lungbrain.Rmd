@@ -1245,7 +1245,7 @@ m4_l_top <- subset(mres4_l$enrichment_result,p.adjustANOVA<0.05)
 m4_l_up <- subset(m4_l_top,s.dist>0)$set
 m4_l_dn <- subset(m4_l_top,s.dist<0)$set
 mitch_report(mres4_l,outfile="mitch4_l.html",overwrite=TRUE)
-write.table(mres3_l$enrichment_result,file="mitch4_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+write.table(mres4_l$enrichment_result,file="mitch4_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
 m4_l_top_up <- head(subset(m4_l_top,s.dist>0),10)[,"s.dist"]
 names(m4_l_top_up) <- head(subset(m4_l_top,s.dist>0),10)[,"set"]
@@ -1336,26 +1336,26 @@ Mitch for LPS in NI
 
 ```{r,mitch 5 lps}
 
-m2_l <- mitch_import(dge2_l, DEtype="deseq2",geneTable=gt)
-mres2_l <- mitch_calc(m2_l, genesets, priority="effect")
-head(mres2_l$enrichment_result,20) %>%
+m5_l <- mitch_import(dge5_l, DEtype="deseq2",geneTable=gt)
+mres5_l <- mitch_calc(m5_l, genesets, priority="effect")
+head(mres5_l$enrichment_result,20) %>%
   kbl(caption = "Top gene pathway differences in NI for LPS") %>%
   kable_paper("hover", full_width = F)
-m2_l_top <- subset(mres2_l$enrichment_result,p.adjustANOVA<0.05)
-m2_l_up <- subset(m2_l_top,s.dist>0)$set
-m2_l_dn <- subset(m2_l_top,s.dist<0)$set
-mitch_report(mres2_l,outfile="mitch2_l.html",overwrite=TRUE)
-write.table(mres2_l$enrichment_result,file="mitch2_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+m5_l_top <- subset(mres5_l$enrichment_result,p.adjustANOVA<0.05)
+m5_l_up <- subset(m5_l_top,s.dist>0)$set
+m5_l_dn <- subset(m5_l_top,s.dist<0)$set
+mitch_report(mres5_l,outfile="mitch5_l.html",overwrite=TRUE)
+write.table(mres5_l$enrichment_result,file="mitch5_l.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
-m2_l_top_up <- head(subset(m2_l_top,s.dist>0),10)[,"s.dist"]
-names(m2_l_top_up) <- head(subset(m2_l_top,s.dist>0),10)[,"set"]
-m2_l_top_dn <- head(subset(m2_l_top,s.dist<0),10)[,"s.dist"]
-names(m2_l_top_dn) <- head(subset(m2_l_top,s.dist<0),10)[,"set"]
-m2_l_top_updn <- c(m2_l_top_up,m2_l_top_dn)
-m2_l_top_updn <- m2_l_top_updn[order(m2_l_top_updn)]
+m5_l_top_up <- head(subset(m5_l_top,s.dist>0),10)[,"s.dist"]
+names(m5_l_top_up) <- head(subset(m5_l_top,s.dist>0),10)[,"set"]
+m5_l_top_dn <- head(subset(m5_l_top,s.dist<0),10)[,"s.dist"]
+names(m5_l_top_dn) <- head(subset(m5_l_top,s.dist<0),10)[,"set"]
+m5_l_top_updn <- c(m5_l_top_up,m5_l_top_dn)
+m5_l_top_updn <- m5_l_top_updn[order(m5_l_top_updn)]
 
 par(mar=c(5,25,3,1))
-barplot(m2_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+barplot(m5_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in NI")
 grid()
@@ -1436,8 +1436,8 @@ heatmap.2(mr5,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cex
 
 ml <- list("hyp"=dge1_l,
   "amy"=dge2_l,
-  "hip"=dge3_l, 
-  "pag"=dge4_l, 
+  "hip"=dge3_l,
+  "pag"=dge4_l,
   "ni"=dge5_l)
 
 m6 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
