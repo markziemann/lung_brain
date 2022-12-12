@@ -164,6 +164,20 @@ barplot(head(sums,6),horiz=TRUE,las=1,xlab="num reads",cex.names=1)
 abline(v=15000000,col="red")
 which(sums<15000000)
 
+pdf("plot01_qc01.pdf")
+par(mar=c(5,8,3,1))
+barplot(colSums(xx),horiz=TRUE,las=1,xlab="num reads",col=ss$cols)
+sums <- colSums(xx)
+sums <- sums[order(sums)]
+barplot(sums,horiz=TRUE,las=1,xlab="num reads",cex.names=0.8)
+abline(v=15000000,col="red")
+which(sums<15000000)
+
+barplot(head(sums,6),horiz=TRUE,las=1,xlab="num reads",cex.names=1)
+abline(v=15000000,col="red")
+which(sums<15000000)
+dev.off()
+
 ```
 
 Now to look at the rRNA content.
@@ -180,6 +194,14 @@ abline(v=10,col="red")
 
 barplot(tail(myrrna),horiz=TRUE,las=1,xlab="percent rRNA reads",cex.names=0.8)
 abline(v=10,col="red")
+
+pdf("plot02_rrna01.pdf")
+barplot(myrrna,horiz=TRUE,las=1,xlab="percent rRNA reads",cex.names=0.8)
+abline(v=10,col="red")
+
+barplot(tail(myrrna),horiz=TRUE,las=1,xlab="percent rRNA reads",cex.names=0.8)
+abline(v=10,col="red")
+dev.off()
 
 myrrna[which(myrrna>10)]
 
@@ -208,6 +230,17 @@ legend("bottomleft", inset=.02, title="tissue",
 legend("left", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=unique(pchs),  cex=1.2)
 
+
+pdf("plot03_mds01.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=pchs, cex=4 ,col=cols )
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="tissue",
+   legend=unique(as.factor(ss$Region)) , fill=unique(cols),  cex=1.2)
+legend("left", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=unique(pchs),  cex=1.2)
+dev.off()
+
 ```
 
 ## Correlation heatmap
@@ -217,6 +250,11 @@ legend("left", inset=.02, title="treatment",
 heatmap.2(cor(xx),trace="n",main="Pearson correlation heatmap",margin=c(8,8),cexRow=0.7,cexCol=0.7)
 
 heatmap.2(cor(xx),trace="n",main="Pearson correlation heatmap",margin=c(8,8),cexRow=0.7,cexCol=0.7)
+
+pdf("plot04_cor01.pdf")
+heatmap.2(cor(xx),trace="n",main="Pearson correlation heatmap",margin=c(8,8),cexRow=0.7,cexCol=0.7)
+heatmap.2(cor(xx),trace="n",main="Pearson correlation heatmap",margin=c(8,8),cexRow=0.7,cexCol=0.7)
+dev.off()
 
 ```
 
@@ -332,6 +370,15 @@ text(mds, labels=rownames(mds) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
+
+pdf("plot05_mds02.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+dev.off()
+
 # Sample 3.1à has high rRNA content
 # Sample 9.1à no problem in its QC but will look for other explanation
 rpm1m <- rowMeans(rpm1)
@@ -365,6 +412,13 @@ text(mds, labels=rownames(mds) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
+pdf("plot06_mds03.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+dev.off()
 
 ```
 
@@ -381,6 +435,14 @@ text(mds, labels=rownames(mds) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
+pdf("plot07_mds04.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+dev.off()
+
 # hip 3
 mds <- cmdscale(dist(t(xx3)))
 cols <- as.numeric(factor(ss3$Treatment))+1
@@ -391,6 +453,14 @@ text(mds, labels=rownames(mds) ,col="black")
 
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+pdf("plot08_mds05.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+dev.off()
 
 # pag 4
 mds <- cmdscale(dist(t(xx4)))
@@ -403,6 +473,14 @@ text(mds, labels=rownames(mds) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
+pdf("plot09_mds06.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "pag")
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+dev.off()
+
 # ni 5
 mds <- cmdscale(dist(t(xx5)))
 cols <- as.numeric(factor(ss5$Treatment))+1
@@ -413,6 +491,14 @@ text(mds, labels=rownames(mds) ,col="black")
 
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+pdf("plot10_mds07.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "ni")
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+dev.off()
 
 ```
 
@@ -437,6 +523,14 @@ text(mds, labels=rownames(mds) ,col="black")
 
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss1$Treatment)) , col=unique(cols), pch=19,  cex=1.2)
+
+pdf("plot11_mds08.pdf")
+plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
+  type = "p",bty="n", pch=19, cex=4 ,col=cols )
+text(mds, labels=rownames(mds) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss1$Treatment)) , col=unique(cols), pch=19,  cex=1.2)
+dev.off()
 
 ```
 
@@ -592,7 +686,7 @@ maplot <- function(de,contrast_name) {
   mtext(SUBHEADER,cex = 1)
 }
 
-make_volcano <- function(de,name) {
+make_volcano_old <- function(de,name) {
     de <- de[which(!is.na(de$padj)),]
     de$pvalue[which(de$pvalue==0)] <- 1e-320
     sig <- subset(de,padj<0.05)
@@ -600,7 +694,7 @@ make_volcano <- function(de,name) {
     N_UP=nrow(subset(sig,log2FoldChange>0))
     N_DN=nrow(subset(sig,log2FoldChange<0))
     DET=nrow(de)
-    HEADER=paste(N_SIG,"@5%FDR,", N_UP, "up", N_DN, "dn", DET, "detected")
+    HEADER=paste( DET, "detected,", N_SIG,"@5%FDR:", N_DN, "dn", N_UP, "up")
     plot(de$log2FoldChange,-log10(de$pval),cex=0.5,pch=19,col="darkgray",
         main=name, xlab="log2 FC", ylab="-log10 pval")
     mtext(HEADER)
@@ -608,23 +702,26 @@ make_volcano <- function(de,name) {
     points(sig$log2FoldChange,-log10(sig$pval),cex=0.5,pch=19,col="red")
 }
 
-make_volcano2 <- function(de,name) {
+make_volcano <- function(de,name) {
     de <- de[which(!is.na(de$padj)),]
     de$pvalue[which(de$pvalue==0)] <- 1e-320
     sig <- subset(de,padj<0.05)
+    # get 5% FDR thresh
+    myp = tail(sig,1)$pvalue
+    myfdr = tail(sig,1)$padj
+    fdrthresh = -log10(myp / myfdr * 0.05)
     N_SIG=nrow(sig)
     N_UP=nrow(subset(sig,log2FoldChange>0))
     N_DN=nrow(subset(sig,log2FoldChange<0))
     DET=nrow(de)
-    HEADER=paste(N_SIG,"@5%FDR,", N_UP, "up", N_DN, "dn", DET, "detected")
-    top <- head(sig,30)
-    mylabels <- sapply(strsplit(rownames(top)," "),"[[",2)
+    HEADER=paste( DET, "detected,", N_SIG,"@5%FDR:", N_DN, "dn", N_UP, "up")
     plot(de$log2FoldChange,-log10(de$pval),cex=0.5,pch=19,col="darkgray",
         main=name, xlab="log2 FC", ylab="-log10 pval")
     mtext(HEADER)
+    abline(h=fdrthresh,col="red",lty=2)
+    abline(v=0,col="black",lty=2)
     grid()
     points(sig$log2FoldChange,-log10(sig$pval),cex=0.5,pch=19,col="red")
-    text(top$log2FoldChange+0.2,-log10(top$pval),labels=mylabels, srt=35 ,cex=0.7)
 }
 
 make_heatmap <- function(de,name,myss,mx,n=30){
@@ -691,6 +788,19 @@ make_heatmap2(de=dge1_o,name="Cont1: Effect of OVA treatment in hypothalamus",my
 dge1_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast 1: Effect of treatment in hypothalamus") %>%
   kable_paper("hover", full_width = F)
 
+pdf("plot12_de01.pdf")
+mymds(de=dge1_l,name="Cont1: Effect of LPS treatment in hypothalamus",myss=ss1_l,mx=xx1_l)
+maplot(dge1_l,"Cont1: Effect of LPS treatment in hypothalamus")
+make_volcano(dge1_l,"Cont1: Effect of LPS treatment in hypothalamus")
+make_heatmap(de=dge1_l,name="Cont1: Effect of LPS treatment in hypothalamus",myss=ss1_l,mx=xx1_l,n=50)
+make_heatmap2(de=dge1_l,name="Cont1: Effect of LPS treatment in hypothalamus",myss=ss1_l,mx=xx1_l,n=50)
+mymds(de=dge1_o,name="Cont1: Effect of OVA treatment in hypothalamus",myss=ss1_o,mx=xx1_o)
+maplot(dge1_o,"Cont1: Effect of OVA treatment in hypothalamus")
+make_volcano(dge1_o,"Cont1: Effect of OVA treatment in hypothalamus")
+make_heatmap(de=dge1_o,name="Cont1: Effect of OVA treatment in hypothalamus",myss=ss1_o,mx=xx1_o,n=50)
+make_heatmap2(de=dge1_o,name="Cont1: Effect of OVA treatment in hypothalamus",myss=ss1_o,mx=xx1_o,n=50)
+dev.off()
+
 ```
 
 ## Results for amygdala
@@ -713,6 +823,18 @@ make_heatmap2(de=dge2_o,name="Cont2: Effect of OVA treatment in amygdala",myss=s
 dge2_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast 2: Effect of treatment in amygdala") %>%
   kable_paper("hover", full_width = F)
 
+pdf("plot13_de02.pdf")
+mymds(de=dge2_l,name="Cont2: Effect of LPS treatment in amygdala",myss=ss2_l,mx=xx2_l)
+maplot(dge2_l,"Cont2: Effect of LPS treatment in amygdala")
+make_volcano(dge2_l,"Cont2: Effect of LPS treatment in amygdala")
+make_heatmap(de=dge2_l,name="Cont2: Effect of LPS treatment in amygdala",myss=ss2_l,mx=xx2_l,n=50)
+make_heatmap2(de=dge2_l,name="Cont2: Effect of LPS treatment in amygdala",myss=ss2_l,mx=xx2_l,n=50)
+mymds(de=dge2_o,name="Cont2: Effect of OVA treatment in amygdala",myss=ss2_o,mx=xx2_o)
+maplot(dge2_o,"Cont2: Effect of OVA treatment in amygdala")
+make_volcano(dge2_o,"Cont2: Effect of OVA treatment in amygdala")
+make_heatmap(de=dge2_o,name="Cont2: Effect of OVA treatment in amygdala",myss=ss2_o,mx=xx2_o,n=50)
+make_heatmap2(de=dge2_o,name="Cont2: Effect of OVA treatment in amygdala",myss=ss2_o,mx=xx2_o,n=50)
+dev.off()
 ```
 
 ## Results for hippocampus
@@ -734,6 +856,19 @@ make_heatmap(de=dge3_o,name="Cont3: Effect of OVA treatment in hippocampus",myss
 make_heatmap2(de=dge3_o,name="Cont3: Effect of OVA treatment in hippocampus",myss=ss3_o,mx=xx3_o,n=50)
 dge3_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast 3: Effect of treatment in hippocampus") %>%
   kable_paper("hover", full_width = F)
+
+pdf("plot14_de03.pdf")
+mymds(de=dge3_l,name="Cont3: Effect of LPS treatment in hippocampus",myss=ss3_l,mx=xx3_l)
+maplot(dge3_l,"Cont3: Effect of LPS treatment in hippocampus")
+make_volcano(dge3_l,"Cont3: Effect of LPS treatment in hippocampus")
+make_heatmap(de=dge3_l,name="Cont3: Effect of LPS treatment in hippocampus",myss=ss3_l,mx=xx3_l,n=50)
+make_heatmap2(de=dge3_l,name="Cont3: Effect of LPS treatment in hippocampus",myss=ss3_l,mx=xx3_l,n=50)
+mymds(de=dge3_o,name="Cont3: Effect of OVA treatment in hippocampus",myss=ss3_o,mx=xx3_o)
+maplot(dge3_o,"Cont3: Effect of OVA treatment in hippocampus")
+make_volcano(dge3_o,"Cont3: Effect of OVA treatment in hippocampus")
+make_heatmap(de=dge3_o,name="Cont3: Effect of OVA treatment in hippocampus",myss=ss3_o,mx=xx3_o,n=50)
+make_heatmap2(de=dge3_o,name="Cont3: Effect of OVA treatment in hippocampus",myss=ss3_o,mx=xx3_o,n=50)
+dev.off()
 
 ```
 
@@ -757,6 +892,19 @@ make_heatmap2(de=dge4_o,name="Cont4: Effect of OVA treatment in PAG",myss=ss4_o,
 dge4_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast 4: Effect of treatment in PAG") %>%
   kable_paper("hover", full_width = F)
 
+pdf("plot15_de04.pdf")
+mymds(de=dge4_l,name="Cont4: Effect of LPS treatment in PAG",myss=ss4_l,mx=xx4_l)
+maplot(dge4_l,"Cont4: Effect of LPS treatment in PAG")
+make_volcano(dge4_l,"Cont4: Effect of LPS treatment in PAG")
+make_heatmap(de=dge4_l,name="Cont4: Effect of LPS treatment in PAG",myss=ss4_l,mx=xx4_l,n=50)
+make_heatmap2(de=dge4_l,name="Cont3: Effect of LPS treatment in PAG",myss=ss4_l,mx=xx4_l,n=50)
+mymds(de=dge4_o,name="Cont4: Effect of OVA treatment in PAG",myss=ss4_o,mx=xx4_o)
+maplot(dge4_o,"Cont4: Effect of OVA treatment in PAG")
+make_volcano(dge4_o,"Cont4: Effect of OVA treatment in PAG")
+make_heatmap(de=dge4_o,name="Cont4: Effect of OVA treatment in PAG",myss=ss4_o,mx=xx4_o,n=50)
+make_heatmap2(de=dge4_o,name="Cont4: Effect of OVA treatment in PAG",myss=ss4_o,mx=xx4_o,n=50)
+dev.off()
+
 ```
 
 ## Results for NI
@@ -779,6 +927,19 @@ make_heatmap2(de=dge5_o,name="Cont5: Effect of OVA treatment in NI",myss=ss5_o,m
 dge5_o[1:20,1:6] %>% kbl(caption = "Top gene expression differences for contrast 5: Effect of treatment in NI") %>%
   kable_paper("hover", full_width = F)
 
+pdf("plot16_de05.pdf")
+mymds(de=dge5_l,name="Cont5: Effect of LPS treatment in NI",myss=ss5_l,mx=xx5_l)
+maplot(dge5_l,"Cont5: Effect of LPS treatment in NI")
+make_volcano(dge5_l,"Cont5: Effect of LPS treatment in NI")
+make_heatmap(de=dge5_l,name="Cont5: Effect of LPS treatment in NI",myss=ss5_l,mx=xx5_l,n=50)
+make_heatmap2(de=dge5_l,name="Cont3: Effect of LPS treatment in NI",myss=ss5_l,mx=xx5_l,n=50)
+mymds(de=dge5_o,name="Cont5: Effect of OVA treatment in NI",myss=ss5_o,mx=xx5_o)
+maplot(dge5_o,"Cont4: Effect of OVA treatment in NI")
+make_volcano(dge5_o,"Cont5: Effect of OVA treatment in NI")
+make_heatmap(de=dge5_o,name="Cont5: Effect of OVA treatment in NI",myss=ss5_o,mx=xx5_o,n=50)
+make_heatmap2(de=dge5_o,name="Cont5: Effect of OVA treatment in NI",myss=ss5_o,mx=xx5_o,n=50)
+dev.off()
+
 ```
 
 ## Euler diagrams
@@ -789,35 +950,44 @@ Below we're comparing the effect of the two treatments on the number of genes fo
 
 par(mar=c(2,2,2,2))
 
-v0 <- list("hyp LPS up"=d1up_l, 
+v1 <- list("hyp LPS up"=d1up_l,
   "hyp LPS dn"=d1dn_l,
   "hyp OVA up"=d1up_o,
   "hyp OVA dn"=d1dn_o)
-plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on hyp")
+plot(euler(v1),quantities = TRUE, edges = "gray", main="effect of treatments on hyp")
 
-v0 <- list("amy LPS up"=d2up_l,
+v2 <- list("amy LPS up"=d2up_l,
   "amy LPS dn"=d2dn_l,
   "amy OVA up"=d2up_o,
   "amy OVA dn"=d2dn_o)
-plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on amy")
+plot(euler(v2),quantities = TRUE, edges = "gray", main="effect of treatments on amy")
 
-v0 <- list("hip LPS up"=d3up_l,
+v3 <- list("hip LPS up"=d3up_l,
   "hip LPS dn"=d3dn_l,
   "hip OVA up"=d3up_o,
   "hip OVA dn"=d3dn_o)
-plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on hip")
+plot(euler(v3),quantities = TRUE, edges = "gray", main="effect of treatments on hip")
 
-v0 <- list("pag LPS up"=d4up_l,
+v4 <- list("pag LPS up"=d4up_l,
   "pag LPS dn"=d4dn_l,
   "pag OVA up"=d4up_o,
   "pag OVA dn"=d4dn_o)
-plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on pag")
+plot(euler(v4),quantities = TRUE, edges = "gray", main="effect of treatments on pag")
 
-v0 <- list("NI LPS up"=d5up_l,
+v5 <- list("NI LPS up"=d5up_l,
   "NI LPS dn"=d5dn_l,
   "NI OVA up"=d5up_o,
   "NI OVA dn"=d5dn_o)
-plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on ni")
+plot(euler(v5),quantities = TRUE, edges = "gray", main="effect of treatments on ni")
+
+
+pdf("plot17_euler01.pdf")
+plot(euler(v1),quantities = TRUE, edges = "gray", main="effect of treatments on hyp")
+plot(euler(v2),quantities = TRUE, edges = "gray", main="effect of treatments on amy")
+plot(euler(v3),quantities = TRUE, edges = "gray", main="effect of treatments on hip")
+plot(euler(v4),quantities = TRUE, edges = "gray", main="effect of treatments on pag")
+plot(euler(v5),quantities = TRUE, edges = "gray", main="effect of treatments on ni")
+dev.off()
 
 ```
 
@@ -871,6 +1041,14 @@ barplot(m1_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in hyp")
 grid()
 
+pdf("plot18_mitch1lps01.pdf")
+par(mar=c(5,25,3,1))
+barplot(m1_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hyp")
+grid()
+dev.off()
+
 ```
 
 Mitch for OVA in hyp
@@ -900,6 +1078,35 @@ barplot(m1_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in hyp")
 grid()
+
+pdf("plot19_mitch1ova01.pdf")
+par(mar=c(5,25,3,1))
+barplot(m1_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hyp")
+grid()
+dev.off()
+
+```
+
+```{r,mitch 1 euler}
+
+m1_l_up <- subset(m1_l_top,s.dist>0)$set
+m1_l_dn <- subset(m1_l_top,s.dist<0)$set
+m1_o_up <- subset(m1_o_top,s.dist>0)$set
+m1_o_dn <- subset(m1_o_top,s.dist<0)$set
+
+par(mar=c(2,2,2,2))
+
+v0 <- list("LPS up"=m1_l_up,
+  "LPS dn"=m1_l_dn,
+  "OVA up"=m1_o_up,
+  "OVA dn"=m1_o_dn)
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on hyp")
+
+pdf("plot20_mitch1lpsovaeuler01.pdf")
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on hyp")
+dev.off()
 
 ```
 
@@ -953,6 +1160,8 @@ Need to make a scatterplot to highlight the following:
 
 ```{r,mitch1_scatter}
 
+par(mar=c(4,4,2,1))
+
 a <- mres1$enrichment_result
 plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
 abline(h=0,lty=2)
@@ -977,7 +1186,7 @@ a2 <- a[which(a$set %in% mysets),]
 
 points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
 
-pdf("mitch1_scatter.pdf")
+pdf("plot21_mitch1_scatter01.pdf")
 
 a <- mres1$enrichment_result
 plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
@@ -1019,7 +1228,7 @@ subset(as,s.LPS<-0.2 & s.OVA<0.2)  %>%
   kable_paper("hover", full_width = F)
 
 # heatmap
-mr1 <- head(mres1$enrichment_result,30)
+mr1 <- head(subset(mres1$enrichment_result,p.adjustMANOVA<0.05),30)
 mr1 <- as.matrix(mr1[,4:5])
 rownames(mr1) <- head(mres1$enrichment_result,30)$set
 
@@ -1027,6 +1236,11 @@ colfunc <- colorRampPalette(c("blue", "white", "red"))
 
 heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
+
+pdf("plot22_mitch1_heatmap01.pdf")
+heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
+dev.off()
 
 ```
 
@@ -1060,6 +1274,13 @@ barplot(m2_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in amy")
 grid()
 
+pdf("plot23_mitch2lps01.pdf")
+barplot(m2_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in amy")
+grid()
+dev.off()
+
 ```
 
 Mitch for OVA in amy
@@ -1090,6 +1311,36 @@ barplot(m2_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in amy")
 grid()
 
+pdf("plot24_mitch2ova01.pdf")
+barplot(m2_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in amy")
+grid()
+dev.off()
+
+```
+
+Mitch 2 euler.
+
+```{r,mitch 2 euler}
+
+m2_l_up <- subset(m2_l_top,s.dist>0)$set
+m2_l_dn <- subset(m2_l_top,s.dist<0)$set
+m2_o_up <- subset(m2_o_top,s.dist>0)$set
+m2_o_dn <- subset(m2_o_top,s.dist<0)$set
+
+par(mar=c(2,2,2,2))
+
+v0 <- list("LPS up"=m1_l_up,
+  "LPS dn"=m1_l_dn,
+  "OVA up"=m1_o_up,
+  "OVA dn"=m1_o_dn)
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on amy")
+
+pdf("plot25_mitch2lpsovaeuler01.pdf")
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on amy")
+dev.off()
+
 ```
 
 Two dimensional mitch analysis in amy.
@@ -1119,7 +1370,7 @@ m2_top_updn <- c(m2_top_up,m2_top_dn)
 m2_top_updn <- m2_top_updn[order(m2_top_updn)]
 
 # heatmap
-mr2 <- head(mres2$enrichment_result,30)
+mr2 <- head(subset(mres2$enrichment_result,p.adjustMANOVA<0.05),30)
 mr2 <- as.matrix(mr2[,4:5])
 rownames(mr2) <- head(mres2$enrichment_result,30)$set
 
@@ -1127,6 +1378,11 @@ colfunc <- colorRampPalette(c("blue", "white", "red"))
 
 heatmap.2(mr2,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in amy" , cexCol=0.9 )
+
+pdf("plot26_mitch2_heatmap01.pdf")
+heatmap.2(mr2,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in amy" , cexCol=0.9 )
+dev.off()
 
 ```
 
@@ -1160,6 +1416,13 @@ barplot(m3_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in hip")
 grid()
 
+pdf("plot27_mitch3lps01.pdf")
+barplot(m3_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hip")
+grid()
+dev.off()
+
 ```
 
 Mitch for OVA in hip
@@ -1190,6 +1453,36 @@ barplot(m3_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in hip")
 grid()
 
+pdf("plot28_mitch3ova01.pdf")
+barplot(m3_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in hip")
+grid()
+dev.off()
+
+```
+
+Mitch 3 euler.
+
+```{r,mitch 3 euler}
+
+m3_l_up <- subset(m3_l_top,s.dist>0)$set
+m3_l_dn <- subset(m3_l_top,s.dist<0)$set
+m3_o_up <- subset(m3_o_top,s.dist>0)$set
+m3_o_dn <- subset(m3_o_top,s.dist<0)$set
+
+par(mar=c(2,2,2,2))
+
+v0 <- list("LPS up"=m1_l_up,
+  "LPS dn"=m1_l_dn,
+  "OVA up"=m1_o_up,
+  "OVA dn"=m1_o_dn)
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on hip")
+
+pdf("plot29_mitch3lpsovaeuler01.pdf")
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on hip")
+dev.off()
+
 ```
 
 Two dimensional mitch analysis in hip.
@@ -1219,7 +1512,7 @@ m3_top_updn <- c(m3_top_up,m3_top_dn)
 m3_top_updn <- m3_top_updn[order(m3_top_updn)]
 
 # heatmap
-mr3 <- head(mres3$enrichment_result,30)
+mr3 <- head(subset(mres3$enrichment_result,p.adjustMANOVA<0.05),30)
 mr3 <- as.matrix(mr3[,4:5])
 rownames(mr3) <- head(mres3$enrichment_result,30)$set
 
@@ -1227,6 +1520,11 @@ colfunc <- colorRampPalette(c("blue", "white", "red"))
 
 heatmap.2(mr3,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in hip" , cexCol=0.9 )
+
+pdf("plot30_mitch3_heatmap01.pdf")
+heatmap.2(mr3,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in hip" , cexCol=0.9 )
+dev.off()
 
 ```
 
@@ -1260,6 +1558,13 @@ barplot(m4_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in pag")
 grid()
 
+pdf("plot31_mitch4lps01.pdf")
+barplot(m4_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in pag")
+grid()
+dev.off()
+
 ```
 
 Mitch for OVA in pag
@@ -1290,6 +1595,36 @@ barplot(m4_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in pag")
 grid()
 
+pdf("plot32_mitch4ova01.pdf")
+barplot(m4_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in pag")
+grid()
+dev.off()
+
+```
+
+Mitch 4 euler.
+
+```{r,mitch 4 euler}
+
+m4_l_up <- subset(m4_l_top,s.dist>0)$set
+m4_l_dn <- subset(m4_l_top,s.dist<0)$set
+m4_o_up <- subset(m4_o_top,s.dist>0)$set
+m4_o_dn <- subset(m4_o_top,s.dist<0)$set
+
+par(mar=c(2,2,2,2))
+
+v0 <- list("LPS up"=m1_l_up,
+  "LPS dn"=m1_l_dn,
+  "OVA up"=m1_o_up,
+  "OVA dn"=m1_o_dn)
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on pag")
+
+pdf("plot33_mitch4lpsovaeuler01.pdf")
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on pag")
+dev.off()
+
 ```
 
 Two dimensional mitch analysis in pag.
@@ -1319,7 +1654,7 @@ m4_top_updn <- c(m4_top_up,m4_top_dn)
 m4_top_updn <- m4_top_updn[order(m4_top_updn)]
 
 # heatmap
-mr4 <- head(mres4$enrichment_result,30)
+mr4 <- head(subset(mres4$enrichment_result,p.adjustMANOVA<0.05),30)
 mr4 <- as.matrix(mr4[,4:5])
 rownames(mr4) <- head(mres4$enrichment_result,30)$set
 
@@ -1327,6 +1662,11 @@ colfunc <- colorRampPalette(c("blue", "white", "red"))
 
 heatmap.2(mr4,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in pag" , cexCol=0.9 )
+
+pdf("plot34_mitch4_heatmap01.pdf")
+heatmap.2(mr4,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in pag" , cexCol=0.9 )
+dev.off()
 
 ```
 
@@ -1360,6 +1700,13 @@ barplot(m5_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in NI")
 grid()
 
+pdf("plot35_mitch5lps01.pdf")
+barplot(m5_l_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in NI")
+grid()
+dev.off()
+
 ```
 
 Mitch for OVA in NI
@@ -1390,6 +1737,36 @@ barplot(m5_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   main="Effect of LPS in NI")
 grid()
 
+pdf("plot36_mitch5ova01.pdf")
+barplot(m5_o_top_updn,horiz=TRUE,las=1,col="darkgray",
+  xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
+  main="Effect of LPS in NI")
+grid()
+dev.off()
+
+```
+
+Mitch 5 euler.
+
+```{r,mitch 5 euler}
+
+m5_l_up <- subset(m5_l_top,s.dist>0)$set
+m5_l_dn <- subset(m5_l_top,s.dist<0)$set
+m5_o_up <- subset(m5_o_top,s.dist>0)$set
+m5_o_dn <- subset(m5_o_top,s.dist<0)$set
+
+par(mar=c(2,2,2,2))
+
+v0 <- list("LPS up"=m1_l_up,
+  "LPS dn"=m1_l_dn,
+  "OVA up"=m1_o_up,
+  "OVA dn"=m1_o_dn)
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on NI")
+
+pdf("plot37_mitch4lpsovaeuler01.pdf")
+plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on NI")
+dev.off()
+
 ```
 
 Two dimensional mitch analysis in NI.
@@ -1419,7 +1796,7 @@ m5_top_updn <- c(m5_top_up,m5_top_dn)
 m5_top_updn <- m5_top_updn[order(m5_top_updn)]
 
 # heatmap
-mr5 <- head(mres5$enrichment_result,30)
+mr5 <- head(subset(mres5$enrichment_result,p.adjustMANOVA<0.05),30)
 mr5 <- as.matrix(mr5[,4:5])
 rownames(mr5) <- head(mres5$enrichment_result,30)$set
 
@@ -1427,6 +1804,11 @@ colfunc <- colorRampPalette(c("blue", "white", "red"))
 
 heatmap.2(mr5,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in NI" , cexCol=0.9 )
+
+pdf("plot37_mitch5_heatmap01.pdf")
+heatmap.2(mr5,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in NI" , cexCol=0.9 )
+dev.off()
 
 ```
 
@@ -1462,7 +1844,7 @@ m6_top_updn <- c(m6_top_up,m6_top_dn)
 m6_top_updn <- m6_top_updn[order(m6_top_updn)]
 
 # heatmap
-mr6 <- head(mres6$enrichment_result,30)
+mr6 <- head(subset(mres6$enrichment_result,p.adjustMANOVA<0.05),30)
 mr6 <- as.matrix(mr6[,4:8])
 rownames(mr6) <- head(mres6$enrichment_result,30)$set
 
@@ -1470,6 +1852,11 @@ colfunc <- colorRampPalette(c("blue", "white", "red"))
 
 heatmap.2(mr6,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways LPS all tissues" , cexCol=0.9 )
+
+pdf("plot38_mitch6_heatmap01.pdf")
+heatmap.2(mr6,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways LPS all tissues" , cexCol=0.9 )
+dev.off()
 
 ```
 
@@ -1505,7 +1892,7 @@ m7_top_updn <- c(m7_top_up,m7_top_dn)
 m7_top_updn <- m7_top_updn[order(m7_top_updn)]
 
 # heatmap
-mr7 <- head(mres7$enrichment_result,30)
+mr7 <- head(subset(mres7$enrichment_result,p.adjustMANOVA<0.05),30)
 mr7 <- as.matrix(mr7[,4:8])
 rownames(mr7) <- head(mres7$enrichment_result,30)$set
 
@@ -1514,9 +1901,12 @@ colfunc <- colorRampPalette(c("blue", "white", "red"))
 heatmap.2(mr7,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways OVA all tissues" , cexCol=0.9 )
 
+pdf("plot39_mitch7_heatmap01.pdf")
+heatmap.2(mr7,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways OVA all tissues" , cexCol=0.9 )
+dev.off()
+
 ```
-
-
 
 ## Conclusion
 
