@@ -1112,16 +1112,6 @@ dev.off()
 
 Two dimensional mitch analysis in hyp.
 
-Need to make a scatterplot to highlight the following:
-
-* Serotonin Neurotransmitter Release Cycle (DN)
-* Class C3 metabotropic glutamate pheromone receptors (DN)
-* Regulation of commissural axon pathfinding by SLIT AND robo (DN)
-* Reduction of Cytosolic Ca (DN)
-* YAP1 and WWTR1 TAZ STIMULATED GENE EXPRESSION (UP)
-* Activation of the mRNA upon binding (UP)
-* Regulation of expression of slits and robs (UP)
-
 ```{r,mitch1_2d}
 
 ml <- list("LPS"=dge1_l,"OVA"=dge1_o)
@@ -1205,8 +1195,7 @@ mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
   "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
   "REDUCTION OF CYTOSOLIC CA LEVELS",
   "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
-  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQU
-ENT BINDING TO 43S",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
   "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
 
 a2 <- a[which(a$set %in% mysets),]
@@ -1234,6 +1223,7 @@ rownames(mr1) <- head(mres1$enrichment_result,30)$set
 
 colfunc <- colorRampPalette(c("blue", "white", "red"))
 
+par(mar=c(2,2,2,2))
 heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
 
@@ -1275,6 +1265,7 @@ barplot(m2_l_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot23_mitch2lps01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m2_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in amy")
@@ -1312,6 +1303,7 @@ barplot(m2_o_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot24_mitch2ova01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m2_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in amy")
@@ -1386,6 +1378,74 @@ dev.off()
 
 ```
 
+Need to make a scatterplot to highlight the following:
+
+* Serotonin Neurotransmitter Release Cycle (DN)
+* Class C3 metabotropic glutamate pheromone receptors (DN)
+* Regulation of commissural axon pathfinding by SLIT AND robo (DN)
+* Reduction of Cytosolic Ca (DN)
+* YAP1 and WWTR1 TAZ STIMULATED GENE EXPRESSION (UP)
+* Activation of the mRNA upon binding (UP)
+* Regulation of expression of slits and robs (UP)
+
+```{r,mitch2_scatter}
+
+par(mar=c(4,4,2,1))
+
+a <- mres2$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+pdf("plot26b_mitch2_scatter01.pdf")
+
+a <- mres2$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+dev.off()
+
+```
+
 ## Mitch pathway analysis in hippocampus
 
 Mitch for LPS in hip
@@ -1417,6 +1477,7 @@ barplot(m3_l_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot27_mitch3lps01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m3_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in hip")
@@ -1454,6 +1515,7 @@ barplot(m3_o_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot28_mitch3ova01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m3_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in hip")
@@ -1528,6 +1590,74 @@ dev.off()
 
 ```
 
+Need to make a scatterplot to highlight the following:
+
+* Serotonin Neurotransmitter Release Cycle (DN)
+* Class C3 metabotropic glutamate pheromone receptors (DN)
+* Regulation of commissural axon pathfinding by SLIT AND robo (DN)
+* Reduction of Cytosolic Ca (DN)
+* YAP1 and WWTR1 TAZ STIMULATED GENE EXPRESSION (UP)
+* Activation of the mRNA upon binding (UP)
+* Regulation of expression of slits and robs (UP)
+
+```{r,mitch3_scatter}
+
+par(mar=c(4,4,2,1))
+
+a <- mres3$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+pdf("plot30b_mitch3_scatter01.pdf")
+
+a <- mres3$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+dev.off()
+
+```
+
 ## Mitch pathway analysis in PAG
 
 Mitch for LPS in pag
@@ -1559,6 +1689,7 @@ barplot(m4_l_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot31_mitch4lps01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m4_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in pag")
@@ -1596,6 +1727,7 @@ barplot(m4_o_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot32_mitch4ova01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m4_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in pag")
@@ -1670,6 +1802,74 @@ dev.off()
 
 ```
 
+Need to make a scatterplot to highlight the following:
+
+* Serotonin Neurotransmitter Release Cycle (DN)
+* Class C3 metabotropic glutamate pheromone receptors (DN)
+* Regulation of commissural axon pathfinding by SLIT AND robo (DN)
+* Reduction of Cytosolic Ca (DN)
+* YAP1 and WWTR1 TAZ STIMULATED GENE EXPRESSION (UP)
+* Activation of the mRNA upon binding (UP)
+* Regulation of expression of slits and robs (UP)
+
+```{r,mitch4_scatter}
+
+par(mar=c(4,4,2,1))
+
+a <- mres4$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+pdf("plot24b_mitch4_scatter01.pdf")
+
+a <- mres4$enrichment_result
+plot(a$s.LPS , a$s.OVA,pch=19,col="gray")
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+as <- subset(a,p.adjustMANOVA<0.05)
+points(as$s.LPS , as$s.OVA,pch=19,col="red")
+
+abline(h=0.2,lty=2,col="red")
+abline(v=0.2,lty=2,col="red")
+abline(h=-0.2,lty=2,col="red")
+abline(v=-0.2,lty=2,col="red")
+
+mysets <- c("SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+  "CLASS C 3 METABOTROPIC GLUTAMATE PHEROMONE RECEPTORS",
+  "REGULATION OF COMMISSURAL AXON PATHFINDING BY SLIT AND ROBO",
+  "REDUCTION OF CYTOSOLIC CA LEVELS",
+  "YAP1 AND WWTR1 TAZ STIMULATED GENE EXPRESSION",
+  "ACTIVATION OF THE MRNA UPON BINDING OF THE CAP BINDING COMPLEX AND EIFS AND SUBSEQUENT BINDING TO 43S",
+  "REGULATION OF EXPRESSION OF SLITS AND ROBOS")
+
+a2 <- a[which(a$set %in% mysets),]
+
+points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
+
+dev.off()
+
+```
+
 ## Mitch pathway analysis in NI
 
 Mitch for LPS in NI
@@ -1701,6 +1901,7 @@ barplot(m5_l_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot35_mitch5lps01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m5_l_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in NI")
@@ -1738,6 +1939,7 @@ barplot(m5_o_top_updn,horiz=TRUE,las=1,col="darkgray",
 grid()
 
 pdf("plot36_mitch5ova01.pdf")
+par(mar=c(5,25,3,1))
 barplot(m5_o_top_updn,horiz=TRUE,las=1,col="darkgray",
   xlab="Enrichment score",cex.names=0.8,xlim=c(-1,1),
   main="Effect of LPS in NI")
@@ -1763,7 +1965,7 @@ v0 <- list("LPS up"=m1_l_up,
   "OVA dn"=m1_o_dn)
 plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on NI")
 
-pdf("plot37_mitch4lpsovaeuler01.pdf")
+pdf("plot37_mitch5lpsovaeuler01.pdf")
 plot(euler(v0),quantities = TRUE, edges = "gray", main="effect of treatments on NI")
 dev.off()
 
