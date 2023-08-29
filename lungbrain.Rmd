@@ -77,6 +77,7 @@ suppressPackageStartupMessages({
     library("topconfects")
     library("kableExtra")
     library("vioplot")
+    library("pkgload")
     library("beeswarm")
 })
 
@@ -1490,7 +1491,7 @@ Mitch for OVA in hip
 
 ```{r,mitch 3 ova}
 
-m3_o <- mitch_import(dge2_o, DEtype="deseq2",geneTable=gt)
+m3_o <- mitch_import(dge3_o, DEtype="deseq2",geneTable=gt)
 mres3_o <- mitch_calc(m3_o, genesets, priority="effect")
 head(mres3_o$enrichment_result,20) %>%
   kbl(caption = "Top gene pathway differences in hip for OVA") %>%
