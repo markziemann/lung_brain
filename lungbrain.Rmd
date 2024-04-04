@@ -383,7 +383,7 @@ dev.off()
 # Sample 3.1à has high rRNA content
 # Sample 9.1à no problem in its QC but will look for other explanation
 rpm1m <- rowMeans(rpm1)
-de1_inv <- data.frame(rpm1$EA9-1 , rpm1m )
+de1_inv <- data.frame(rpm1[,"EA9.1"] , rpm1m )
 colnames(de1_inv) <- c("ea9.1","mean")
 de1_inv$ratio <- de1_inv$ea9.1 / de1_inv$mean
 de1_inv <- de1_inv[order(-de1_inv$ratio),]
@@ -399,19 +399,55 @@ Then repeat the MDS.
 
 ```{r,mds2b}
 
-ss1 <- ss1[rownames(ss1)!="EA3-1",]
+ss1 <- ss1[rownames(ss1)!="EA3.1",]
 xx1 <- xx1[,colnames(xx1) %in% rownames(ss1)]
 
 # hyp 1
-mds <- cmdscale(dist(t(xx1)))
+mds <- cmdscale(dist(t(xx1)),k=4)
 cols <- as.numeric(factor(ss1$Treatment))+1
 
+# 1 vs 2
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds, labels=rownames(mds) ,col="black")
 
 legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 3
+plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 3
+plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 4
+plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 4
+plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 3 vs 4
+plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
+legend("topright", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 pdf("plot06_mds03.pdf")
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
@@ -419,6 +455,41 @@ plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
 text(mds, labels=rownames(mds) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 3
+plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 3
+plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 4
+plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 4
+plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 3 vs 4
+plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
+text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
+legend("topright", inset=.02, title="treatment",
+  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 dev.off()
 
 ```
@@ -1232,6 +1303,28 @@ pdf("plot22_mitch1_heatmap01.pdf")
 heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
 dev.off()
+
+```
+
+Two dimensional mitch analysis in hyp with focus on discordant pathways
+
+```{r,mitch1_2d_discord}
+
+mres1 <- mitch_calc(m1, genesets, priority="SD")
+
+head(mres1$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway discordant differences in hypothalamus for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+m1_top <- subset(mres1$enrichment_result,p.adjustMANOVA<0.05)
+mitch_report(mres1,outfile="mitch1_discord.html",overwrite=TRUE)
+write.table(mres1$enrichment_result,file="mitch1_discord.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+m1_top_up <- head(subset(m1_top,s.dist>0),10)[,"s.dist"]
+names(m1_top_up) <- head(subset(m1_top,s.dist>0),10)[,"set"]
+m1_top_dn <- head(subset(m1_top,s.dist<0),10)[,"s.dist"]
+names(m1_top_dn) <- head(subset(m1_top,s.dist<0),10)[,"set"]
+m1_top_updn <- c(m1_top_up,m1_top_dn)
+m1_top_updn <- m1_top_updn[order(m1_top_updn)]
 
 ```
 
