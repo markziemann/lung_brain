@@ -89,19 +89,20 @@ Importing RNA-seq data
 
 ```{r,importdata}
 
-tmp <- read.table("3col.tsv.gz",header=F)
-x <- as.matrix(acast(tmp, V2~V1, value.var="V3", fun.aggregate = sum))
-x <- as.data.frame(x)
-accession <- sapply((strsplit(rownames(x),"\\|")),"[[",2)
-symbol<-sapply((strsplit(rownames(x),"\\|")),"[[",6)
-x$geneid <- paste(accession,symbol)
-xx <- aggregate(. ~ geneid,x,sum)
-rownames(xx) <- xx$geneid
-xx$geneid = NULL
-xx <- round(xx)
-xx <- xx[,which(colnames(xx)!="test")]
-xx[1:6,1:6]
-dim(xx)
+#tmp <- read.table("3col.tsv.gz",header=F)
+#x <- as.matrix(acast(tmp, V2~V1, value.var="V3", fun.aggregate = sum))
+#x <- as.data.frame(x)
+#accession <- sapply((strsplit(rownames(x),"\\|")),"[[",2)
+#symbol<-sapply((strsplit(rownames(x),"\\|")),"[[",6)
+#x$geneid <- paste(accession,symbol)
+#xx <- aggregate(. ~ geneid,x,sum)
+#rownames(xx) <- xx$geneid
+#xx$geneid = NULL
+#xx <- round(xx)
+#xx <- xx[,which(colnames(xx)!="test")]
+#xx[1:6,1:6]
+#dim(xx)
+xx <- read.table("lungbrain_counts.tsv",sep="\t")
 
 ```
 
@@ -111,19 +112,19 @@ They are duplicated for lane 1 and 2, which I will aggregate.
 
 ```{r,colnames}
 
-txx <- as.data.frame(t(xx))
-txx$label <- sapply(strsplit(rownames(txx),"_"),"[[",1)
-txx[1:3,c(1:4,ncol(txx))]
-txx2 <- aggregate(. ~ label,txx,sum)
-txx2[1:3,1:4]
-rownames(txx2) <- txx2[,1]
-txx2[,1] = NULL
-xx <- as.data.frame(t(txx2))
-xx[1:4,1:5]
-
-write.table(xx,file="lungbrain_counts.tsv",sep="\t",quote=FALSE)
-rxx <- xx/colSums(xx) *1e6
+#txx <- as.data.frame(t(xx))
+#txx$label <- sapply(strsplit(rownames(txx),"_"),"[[",1)
+#txx[1:3,c(1:4,ncol(txx))]
+#txx2 <- aggregate(. ~ label,txx,sum)
+#txx2[1:3,1:4]
+#rownames(txx2) <- txx2[,1]
+#txx2[,1] = NULL
+#xx <- as.data.frame(t(txx2))
+#xx[1:4,1:5]
+##write.table(xx,file="lungbrain_counts.tsv",sep="\t",quote=FALSE)
+rxx <- apply(xx,2,function(x) { x / sum(x) * 1e6  } )
 rxx[1:4,1:5]
+head(colSums(rpm))
 
 ```
 
@@ -279,71 +280,71 @@ I will begin with hypothalamus and leave the rest to Craig's team.
 ss1 <- ss[which(ss$Region=="hyp"),]
 xx1 <- xx[which(colnames(xx) %in% rownames(ss1))]
 xx1 <- xx1[which(rowMeans(xx1)>=10),]
-rpm1 <- xx1/colSums(xx1) *1e6
+rpm1 <- apply(xx1,2,function(x) { x / sum(x) * 1e6  } )
 ss1_l <- ss[which(ss$Region=="hyp" & ss$Treatment != "OVA"),]
 xx1_l <- xx[which(colnames(xx) %in% rownames(ss1_l))]
 xx1_l <- xx1_l[which(rowMeans(xx1_l)>=10),]
-rpm1_l <- xx1_l/colSums(xx1_l) *1e6
+rpm1_l <- apply(xx1_l,2,function(x) { x / sum(x) * 1e6  } )
 ss1_o <- ss[which(ss$Region=="hyp" & ss$Treatment != "LPS"),]
 xx1_o <- xx[which(colnames(xx) %in% rownames(ss1_o))]
 xx1_o <- xx1_o[which(rowMeans(xx1_o)>=10),]
-rpm1_o <- xx1_o/colSums(xx1_o) *1e6
+rpm1_o <- apply(xx1_o,2,function(x) { x / sum(x) * 1e6  } )
 
 # amy 2
 ss2 <- ss[which(ss$Region=="amy"),]
 xx2 <- xx[which(colnames(xx) %in% rownames(ss2))]
 xx2 <- xx2[which(rowMeans(xx2)>=10),]
-rpm2 <- xx2/colSums(xx2) *1e6
+rpm2 <- apply(xx2,2,function(x) { x / sum(x) * 1e6  } )
 ss2_l <- ss[which(ss$Region=="amy" & ss$Treatment != "OVA"),]
 xx2_l <- xx[which(colnames(xx) %in% rownames(ss2_l))]
 xx2_l <- xx2_l[which(rowMeans(xx2_l)>=10),]
-rpm2_l <- xx2_l/colSums(xx2_l) *1e6
+rpm2_l <- apply(xx2_l,2,function(x) { x / sum(x) * 1e6  } )
 ss2_o <- ss[which(ss$Region=="amy" & ss$Treatment != "LPS"),]
 xx2_o <- xx[which(colnames(xx) %in% rownames(ss2_o))]
 xx2_o <- xx2_o[which(rowMeans(xx2_o)>=10),]
-rpm1_o <- xx2_o/colSums(xx2_o) *1e6
+rpm2_o <- apply(xx2_o,2,function(x) { x / sum(x) * 1e6  } )
 
 # hip 3
 ss3 <- ss[which(ss$Region=="hip"),]
 xx3 <- xx[which(colnames(xx) %in% rownames(ss3))]
 xx3 <- xx3[which(rowMeans(xx3)>=10),]
-rpm3 <- xx3/colSums(xx3) *1e6
+rpm3 <- apply(xx3,2,function(x) { x / sum(x) * 1e6  } )
 ss3_l <- ss[which(ss$Region=="hip" & ss$Treatment != "OVA"),]
 xx3_l <- xx[which(colnames(xx) %in% rownames(ss3_l))]
 xx3_l <- xx3_l[which(rowMeans(xx3_l)>=10),]
-rpm3_l <- xx3_l/colSums(xx3_l) *1e6
+rpm3_l <- apply(xx3_l,2,function(x) { x / sum(x) * 1e6  } )
 ss3_o <- ss[which(ss$Region=="hip" & ss$Treatment != "LPS"),]
 xx3_o <- xx[which(colnames(xx) %in% rownames(ss3_o))]
 xx3_o <- xx3_o[which(rowMeans(xx3_o)>=10),]
-rpm3_o <- xx3_o/colSums(xx3_o) *1e6
+rpm3_o <- apply(xx3_o,2,function(x) { x / sum(x) * 1e6  } )
 
 # pag 4
 ss4 <- ss[which(ss$Region=="pag"),]
 xx4 <- xx[which(colnames(xx) %in% rownames(ss4))]
 xx4 <- xx4[which(rowMeans(xx4)>=10),]
-rpm4 <- xx4/colSums(xx4) *1e6
+rpm4 <- apply(xx4,2,function(x) { x / sum(x) * 1e6  } )
 ss4_l <- ss[which(ss$Region=="pag" & ss$Treatment != "OVA"),]
 xx4_l <- xx[which(colnames(xx) %in% rownames(ss4_l))]
 xx4_l <- xx4_l[which(rowMeans(xx4_l)>=10),]
-rpm4_l <- xx4_l/colSums(xx4_l) *1e6
+rpm4_l <- apply(xx4_l,2,function(x) { x / sum(x) * 1e6  } )
 ss4_o <- ss[which(ss$Region=="pag" & ss$Treatment != "LPS"),]
 xx4_o <- xx[which(colnames(xx) %in% rownames(ss4_o))]
 xx4_o <- xx4_o[which(rowMeans(xx4_o)>=10),]
-rpm4_o <- xx4_o/colSums(xx4_o) *1e6
+rpm4_o <- apply(xx4_o,2,function(x) { x / sum(x) * 1e6  } )
 
 # ni 5
 ss5 <- ss[which(ss$Region=="NI"),]
 xx5 <- xx[which(colnames(xx) %in% rownames(ss5))]
 xx5 <- xx5[which(rowMeans(xx5)>=10),]
-rpm5 <- xx5/colSums(xx5) *1e6
+rpm5 <- apply(xx5,2,function(x) { x / sum(x) * 1e6  } )
 ss5_l <- ss[which(ss$Region=="NI" & ss$Treatment != "OVA"),]
 xx5_l <- xx[which(colnames(xx) %in% rownames(ss5_l))]
 xx5_l <- xx5_l[which(rowMeans(xx5_l)>=10),]
-rpm5_l <- xx5_l/colSums(xx5_l) *1e6
+rpm5_l <- apply(xx5,2,function(x) { x / sum(x) * 1e6  } )
 ss5_o <- ss[which(ss$Region=="NI" & ss$Treatment != "LPS"),]
 xx5_o <- xx[which(colnames(xx) %in% rownames(ss5_o))]
 xx5_o <- xx5_o[which(rowMeans(xx5_o)>=10),]
-rpm5_o <- xx5_o/colSums(xx5_o) *1e6
+rpm5 <- apply(xx5,2,function(x) { x / sum(x) * 1e6  } )
 
 message("dimensions of objects: n genes, n samples")
 l <- list("xx"=xx,"xx1"=xx1,"xx1 l"= xx1_l,"xx1 o"=xx1_o,
@@ -370,7 +371,6 @@ text(mds, labels=rownames(mds) ,col="black")
 
 legend("bottomleft", inset=.02, title="treatment",
    legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
-
 
 pdf("plot05_mds02.pdf")
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
