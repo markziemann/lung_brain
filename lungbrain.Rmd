@@ -124,7 +124,7 @@ They are duplicated for lane 1 and 2, which I will aggregate.
 ##write.table(xx,file="lungbrain_counts.tsv",sep="\t",quote=FALSE)
 rxx <- apply(xx,2,function(x) { x / sum(x) * 1e6  } )
 rxx[1:4,1:5]
-head(colSums(rpm))
+head(colSums(rxx))
 
 ```
 
