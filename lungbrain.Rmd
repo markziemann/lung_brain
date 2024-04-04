@@ -136,7 +136,7 @@ Need to delete "EA13-4".
 
 ss <- read.table("lungbrain_samplesheet.tsv",header=TRUE)
 
-rownames(ss) <- gsub('\\.','-',paste("EA",as.character(ss$OriginalID),sep=""))
+rownames(ss) <- paste("EA",as.character(ss$OriginalID),sep="")
 ss <- ss[order(rownames(ss)),]
 
 rownames(ss) == colnames(rxx)
