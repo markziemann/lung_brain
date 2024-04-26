@@ -1328,6 +1328,138 @@ m1_top_updn <- m1_top_updn[order(m1_top_updn)]
 
 ```
 
+Paper 1 (the hypothalamus, referred as mitch 1 in our analysis):
+
+Thanks for sending the MDS plots and the discordant Mitch1. Criag and I are interested in the following gene sets:
+Neuronal System gene sets: directly related to mental health, very interesting) (Appeared in the old original JOINT mitch 1 heatmap), which are:
+
+* Highly calcium permeable postsynaptic nicotinic acetylcholine receptors
+
+* Acetylcholine binding and downstream events
+
+* Serotonin Neurotransmitter Release Cycle
+
+* CREB1 phosphorylation through the activation of Adenylate Cyclase
+
+* Voltage gated Potassium channels
+
+```{r,mitch1_bespokeheat}
+
+mres1 <- mitch_calc(m1, genesets, priority="effect")
+
+## Neuronal sets
+mysets2 <- c("HIGHLY CALCIUM PERMEABLE POSTSYNAPTIC NICOTINIC ACETYLCHOLINE RECEPTORS",
+"ACETYLCHOLINE BINDING AND DOWNSTREAM EVENTS",
+"SEROTONIN NEUROTRANSMITTER RELEASE CYCLE",
+"CREB1 PHOSPHORYLATION THROUGH THE ACTIVATION OF ADENYLATE CYCLASE",
+"VOLTAGE GATED POTASSIUM CHANNELS")
+
+mres1_bespoke <- mres1$enrichment_result[which(mres1$enrichment_result$set %in% mysets2),]
+rownames(mres1_bespoke) <- mres1_bespoke$set
+
+mres1_bespoke %>%
+  kbl(caption = "Selected neuronal pathways in hypothalamus for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+
+mres1mx <- as.matrix(mres1_bespoke[,c("s.LPS","s.OVA")])
+
+heatmap.2(mres1mx,trace="none",col=colfunc(25),scale="none", margins = c(15,28), cexRow=0.7,
+  main="Neuronal pathways in hypothalamus" , cexCol=0.9 )
+
+lapply(1:length(mysets2), function(i) {
+  myset=mysets2[i]
+  mygenes <- genesets[[which(names(genesets) == myset)]]
+  allnames <- rownames(rpm1)
+  allnames <- sapply(strsplit(allnames," "),"[[",2)
+  mymx <- rpm1[which(allnames %in% mygenes),]
+  mymx <- mymx[,colnames(mymx) %in% rownames(ss1)] # filter for those present in ss1
+  mycols <- gsub("OVA","purple",gsub("LPS","orange",gsub("Control","green",ss1$Treatment)))
+
+  heatmap.2(mymx,trace="none",col=colfunc(25),scale="row", margins = c(10,15), cexRow=0.7,
+    ColSideColors=mycols,main=myset)
+  mtext("Ctrl=green,LPS=orange,OVA=purple")
+})
+
+pdf("mitch1_bespoke_heatmap01.pdf")
+heatmap.2(mres1mx,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Neuronal pathways in hypothalamus" , cexCol=0.9 )
+
+lapply(1:length(mysets2), function(i) {
+  myset=mysets2[i]
+  mygenes <- genesets[[which(names(genesets) == myset)]]
+  allnames <- rownames(rpm1)
+  allnames <- sapply(strsplit(allnames," "),"[[",2)
+  mymx <- rpm1[which(allnames %in% mygenes),]
+  mymx <- mymx[,colnames(mymx) %in% rownames(ss1)] # filter for those present in ss1
+  mycols <- gsub("OVA","purple",gsub("LPS","orange",gsub("Control","green",ss1$Treatment)))
+
+  heatmap.2(mymx,trace="none",col=colfunc(25),scale="row", margins = c(10,15), cexRow=0.7,
+    ColSideColors=mycols,main=myset)
+  mtext("Ctrl=green,LPS=orange,OVA=purple")
+})
+dev.off()
+
+mysets2 <- genesets[names(genesets) %in% mysets2]
+mres1b1 <- mitch_calc(m1, mysets2, priority="effect")
+mitch_plots(res=mres1b1,outfile="mitch1_bespoke_charts.pdf")
+
+## Immuno sets
+mysets3 <- c("IMMUNOREGULATORY INTERACTIONS BETWEEN A LYMPHOID AND A NON LYMPHOID CELL",
+"INTERFERON GAMMA SIGNALING",
+"ENDOSOMAL VACUOLAR PATHWAY",
+"INTERFERON ALPHA BETA SIGNALING")
+
+mres1_bespoke <- mres1$enrichment_result[which(mres1$enrichment_result$set %in% mysets3),]
+rownames(mres1_bespoke) <- mres1_bespoke$set
+
+mres1_bespoke %>%
+  kbl(caption = "Selected immune pathways in hypothalamus for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+
+mres1mx <- as.matrix(mres1_bespoke[,c("s.LPS","s.OVA")])
+
+heatmap.2(mres1mx,trace="none",col=colfunc(25),scale="none", margins = c(15,28), cexRow=0.7,
+  main="Immune pathways in hypothalamus" , cexCol=0.9 )
+
+lapply(1:length(mysets3), function(i) {
+  myset=mysets3[i]
+  mygenes <- genesets[[which(names(genesets) == myset)]]
+  allnames <- rownames(rpm1)
+  allnames <- sapply(strsplit(allnames," "),"[[",2)
+  mymx <- rpm1[which(allnames %in% mygenes),]
+  mymx <- mymx[,colnames(mymx) %in% rownames(ss1)] # filter for those present in ss1
+  mycols <- gsub("OVA","purple",gsub("LPS","orange",gsub("Control","green",ss1$Treatment)))
+
+  heatmap.2(mymx,trace="none",col=colfunc(25),scale="row", margins = c(10,15), cexRow=0.7,
+    ColSideColors=mycols,main=myset)
+  mtext("Ctrl=green,LPS=orange,OVA=purple")
+})
+
+pdf("mitch1_bespoke_heatmap02.pdf")
+heatmap.2(mres1mx,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Immune pathways in hypothalamus" , cexCol=0.9 )
+
+lapply(1:length(mysets3), function(i) {
+  myset=mysets3[i]
+  mygenes <- genesets[[which(names(genesets) == myset)]]
+  allnames <- rownames(rpm1)
+  allnames <- sapply(strsplit(allnames," "),"[[",2)
+  mymx <- rpm1[which(allnames %in% mygenes),]
+  mymx <- mymx[,colnames(mymx) %in% rownames(ss1)] # filter for those present in ss1
+  mycols <- gsub("OVA","purple",gsub("LPS","orange",gsub("Control","green",ss1$Treatment)))
+
+  heatmap.2(mymx,trace="none",col=colfunc(25),scale="row", margins = c(10,15), cexRow=0.7,
+    ColSideColors=mycols,main=myset)
+  mtext("Ctrl=green,LPS=orange,OVA=purple")
+})
+dev.off()
+
+mysets3 <- genesets[names(genesets) %in% mysets3]
+mres1b2 <- mitch_calc(m1, mysets3, priority="effect")
+mitch_plots(res=mres1b2,outfile="mitch1_bespoke_charts2.pdf")
+
+```
+
 ## Mitch pathway analysis in amygdala
 
 Mitch for LPS in amy
