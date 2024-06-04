@@ -1240,7 +1240,7 @@ Mitch for LPS in hyp
 
 m1_l <- mitch_import(dge1_l, DEtype="deseq2",geneTable=gt)
 mres1_l <- mitch_calc(m1_l, genesets, priority="effect")
-head(mres1_l$enrichment_result,20) %>% 
+head(mres1_l$enrichment_result,20) %>%
   kbl(caption = "Top gene pathway differences in hypothalamus for LPS") %>%
   kable_paper("hover", full_width = F)
 m1_l_top <- subset(mres1_l$enrichment_result,p.adjustANOVA<0.05)
