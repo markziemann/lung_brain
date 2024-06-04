@@ -1738,17 +1738,17 @@ m2_top_updn <- c(m2_top_up,m2_top_dn)
 m2_top_updn <- m2_top_updn[order(m2_top_updn)]
 
 # heatmap
-mr2 <- head(subset(mres2$enrichment_result,p.adjustMANOVA<0.05),30)
+mr2 <- head(subset(mres2$enrichment_result,p.adjustMANOVA<0.05),50)
 mr2 <- as.matrix(mr2[,4:5])
-rownames(mr2) <- head(mres2$enrichment_result,30)$set
+rownames(mr2) <- head(mres2$enrichment_result,50)$set
 
 colfunc <- colorRampPalette(c("blue", "white", "red"))
 
-heatmap.2(mr2,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+heatmap.2(mr2,trace="none",col=colfunc(25),scale="none", margins = c(5,28), cexRow=0.6,
   main="Top ranked pathways in amy" , cexCol=0.9 )
 
 pdf("plot26_mitch2_heatmap01.pdf")
-heatmap.2(mr2,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+heatmap.2(mr2,trace="none",col=colfunc(25),scale="none", margins = c(5,28), cexRow=0.6,
   main="Top ranked pathways in amy" , cexCol=0.9 )
 dev.off()
 
@@ -1951,19 +1951,20 @@ m3_top_updn <- c(m3_top_up,m3_top_dn)
 m3_top_updn <- m3_top_updn[order(m3_top_updn)]
 
 # heatmap
-mr3 <- head(subset(mres3$enrichment_result,p.adjustMANOVA<0.05),30)
+mr3 <- head(subset(mres3$enrichment_result,p.adjustMANOVA<0.05),50)
 mr3 <- as.matrix(mr3[,4:5])
-rownames(mr3) <- head(mres3$enrichment_result,30)$set
+rownames(mr3) <- head(mres3$enrichment_result,50)$set
 
 colfunc <- colorRampPalette(c("blue", "white", "red"))
 
-heatmap.2(mr3,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+heatmap.2(mr3,trace="none",col=colfunc(25),scale="none", margins = c(5,28), cexRow=0.6,
   main="Top ranked pathways in hip" , cexCol=0.9 )
 
 pdf("plot30_mitch3_heatmap01.pdf")
-heatmap.2(mr3,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+heatmap.2(mr3,trace="none",col=colfunc(25),scale="none", margins = c(5,28), cexRow=0.6,
   main="Top ranked pathways in hip" , cexCol=0.9 )
 dev.off()
+
 
 ```
 
