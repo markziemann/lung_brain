@@ -65,7 +65,7 @@ Genes and pathways with false discovery rate (FDR)<0.05 were considered signific
 
 suppressPackageStartupMessages({
     library("zoo")
-    library("tidyverse")
+#    library("tidyverse")
     library("reshape2")
     library("DESeq2")
     library("gplots")
@@ -412,84 +412,84 @@ plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
 text(mds, labels=rownames(mds) ,col="black")
 
 legend("bottomleft", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 1 vs 3
 plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+   legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 2 vs 3
 plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 1 vs 4
 plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 2 vs 4
 plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 3 vs 4
 plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
 legend("topright", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 pdf("plot06_mds03.pdf")
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds, labels=rownames(mds) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+   legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 1 vs 3
 plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+   legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 2 vs 3
 plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 1 vs 4
 plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 2 vs 4
 plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 # 3 vs 4
 plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hyp")
 text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
 legend("topright", inset=.02, title="treatment",
-  legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss1$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 dev.off()
 
 ```
@@ -497,41 +497,190 @@ dev.off()
 ```{r,mds3}
 
 # amy 2
-mds <- cmdscale(dist(t(xx2)))
+mds <- cmdscale(dist(t(xx2)),k=4)
 cols <- as.numeric(factor(ss2$Treatment))+1
 
+# 1 vs 2
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
 text(mds, labels=rownames(mds) ,col="black")
 
 legend("bottomleft", inset=.02, title="treatment",
-   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 3
+plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 3
+plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 4
+plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 4
+plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 3 vs 4
+plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
+legend("topright", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
 
 pdf("plot07_mds04.pdf")
+
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
 text(mds, labels=rownames(mds) ,col="black")
+
 legend("bottomleft", inset=.02, title="treatment",
-   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 3
+plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 3
+plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 4
+plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 4
+plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 3 vs 4
+plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "amy")
+text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
+legend("topright", inset=.02, title="treatment",
+  legend=unique(as.factor(ss2$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
 dev.off()
 
 # hip 3
-mds <- cmdscale(dist(t(xx3)))
+mds <- cmdscale(dist(t(xx3)),k=4)
 cols <- as.numeric(factor(ss3$Treatment))+1
 
+# 1 vs 2
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
 text(mds, labels=rownames(mds) ,col="black")
-
 legend("bottomleft", inset=.02, title="treatment",
-   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 3
+plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 3
+plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 4
+plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 4
+plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 3 vs 4
+plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
+legend("topright", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
 
 pdf("plot08_mds05.pdf")
+
+# 1 vs 2
 plot(mds, xlab="Coordinate 1", ylab="Coordinate 2",
   type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
 text(mds, labels=rownames(mds) ,col="black")
 legend("bottomleft", inset=.02, title="treatment",
-   legend=unique(as.factor(ss$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 3
+plot(mds[,c(1,3)], xlab="Coordinate 1", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(1,3)], labels=rownames(mds[,c(1,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+   legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 3
+plot(mds[,c(2,3)], xlab="Coordinate 2", ylab="Coordinate 3",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(2,3)], labels=rownames(mds[,c(2,3)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 1 vs 4
+plot(mds[,c(1,4)], xlab="Coordinate 1", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(1,4)], labels=rownames(mds[,c(1,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 2 vs 4
+plot(mds[,c(2,4)], xlab="Coordinate 2", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(2,4)], labels=rownames(mds[,c(2,4)]) ,col="black")
+legend("bottomleft", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+# 3 vs 4
+plot(mds[,c(3,4)], xlab="Coordinate 3", ylab="Coordinate 4",
+  type = "p",bty="n",pch=19, cex=4 ,col=cols , main = "hip")
+text(mds[,c(3,4)], labels=rownames(mds[,c(3,4)]) ,col="black")
+legend("topright", inset=.02, title="treatment",
+  legend=unique(as.factor(ss3$Treatment)) , pch=19,col=unique(cols),  cex=1.2)
+
+
 dev.off()
 
 # pag 4
@@ -1577,6 +1726,7 @@ head(mres2$enrichment_result,20) %>%
 m2_top <- subset(mres2$enrichment_result,p.adjustMANOVA<0.05)
 m2_up <- subset(m2_top,s.dist>0)$set
 m2_dn <- subset(m2_top,s.dist<0)$set
+mitch_plots(mres2, outfile="mres2.pdf")
 mitch_report(mres2,outfile="mitch2.html",overwrite=TRUE)
 write.table(mres2$enrichment_result,file="mitch2.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
@@ -1789,6 +1939,7 @@ head(mres3$enrichment_result,20) %>%
 m3_top <- subset(mres3$enrichment_result,p.adjustMANOVA<0.05)
 m3_up <- subset(m3_top,s.dist>0)$set
 m3_dn <- subset(m3_top,s.dist<0)$set
+mitch_plots(mres3, outfile="mres3.pdf")
 mitch_report(mres3,outfile="mitch3.html",overwrite=TRUE)
 write.table(mres3$enrichment_result,file="mitch3.tsv",quote=FALSE,sep="\t",row.names=FALSE)
 
@@ -1880,6 +2031,107 @@ a2 <- a[which(a$set %in% mysets),]
 
 points(a2$s.LPS , a2$s.OVA+0.025,pch=25,col="red")
 
+dev.off()
+
+```
+
+## Bespoke analysis
+
+As discussed before, could you please generate a Combined Heatmap with total 4 columns (Amygdala and Hippocampus):
+(common gene sets between these 2 brain regions; these will be (Figure 2A in the paper showing similar directionality);
+(Figure 2B in the paper showing opposite directionality) (in PDF format).
+
+```{r,mitch23_combined}
+
+ml <- list( "amy LPS"=dge2_l,"amy OVA"=dge2_o ,"hip LPS"=dge3_l,"hip OVA"=dge3_o)
+m23 <- mitch_import(ml, DEtype="deseq2",geneTable=gt)
+head(m23)
+
+mres23 <- mitch_calc(m23, genesets, priority="effect")
+
+head(mres23$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in amy and hip for LPS and OVA") %>%
+  kable_paper("hover", full_width = F)
+
+#mitch_report(mres23,outfile="mitch23.html",overwrite=TRUE)
+write.table(mres23$enrichment_result,file="mitch23.tsv",quote=FALSE,sep="\t",row.names=FALSE)
+
+# heatmap
+mr23 <- head(subset(mres23$enrichment_result,p.adjustMANOVA<0.05),30)
+mr23 <- as.matrix(mr23[,4:7])
+rownames(mr23) <- head(mres23$enrichment_result,30)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+heatmap.2(mr23,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip" , cexCol=0.9 )
+
+pdf("plot40_mitch23_heatmap01.pdf")
+heatmap.2(mr23,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip" , cexCol=0.9 )
+dev.off()
+
+# now select 30 sets from mres2 and mres3
+n=17
+mysets <- union( head(mres2$enrichment_result,n)$set , head(mres3$enrichment_result,n)$set )
+mr23 <- mres23$enrichment_result[which(mres23$enrichment_result$set %in% mysets),]
+rownames(mr23) <- mr23$set
+mr23 <- as.matrix(mr23[,4:7])
+
+heatmap.2(mr23,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip" , cexCol=0.9 )
+
+pdf("plot41_mitch23_heatmap01.pdf")
+heatmap.2(mr23,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip" , cexCol=0.9 )
+dev.off()
+
+```
+
+Discordant analysis.
+
+```{r,mitch23_combined_discordant}
+
+mres23d <- mitch_calc(m23, genesets, priority="SD")
+
+head(mres23d$enrichment_result,20) %>%
+  kbl(caption = "Top gene pathway differences in amy and hip for LPS and OVA (discordant)") %>%
+  kable_paper("hover", full_width = F)
+
+# heatmap
+mr23d <- head(subset(mres23d$enrichment_result,p.adjustMANOVA<0.05),30)
+rownames(mr23d) <- mr23d$set
+mr23d <- as.matrix(mr23d[,4:7])
+
+heatmap.2(mr23d,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip (discordant)" , cexCol=0.9 )
+
+pdf("plot42_mitch23d_heatmap01.pdf")
+heatmap.2(mr23d,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip (discordant)" , cexCol=0.9 )
+dev.off()
+
+ml2d <- list("LPS"=dge2_l,"OVA"=dge2_o)
+m2d <- mitch_import(ml2d, DEtype="deseq2",geneTable=gt)
+mres2d <- mitch_calc(m2d, genesets, priority="SD")
+head(mres2d$enrichment_result)
+
+ml3d <- list("LPS"=dge3_l,"OVA"=dge3_o)
+m3d <- mitch_import(ml3d, DEtype="deseq2",geneTable=gt)
+mres3d <- mitch_calc(m3d, genesets, priority="SD")
+head(mres3d$enrichment_result)
+
+mysets <- union(head(mres2d$enrichment_result,15)$set , head(mres3d$enrichment_result,15)$set)
+mr23d <- mres23d$enrichment_result[mres23d$enrichment_result$set %in% mysets,]
+rownames(mr23d) <- mr23d$set
+mr23d <- as.matrix(mr23d[,4:7])
+
+heatmap.2(mr23d,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip (discordant)" , cexCol=0.9 )
+
+pdf("plot43_mitch23d_heatmap01.pdf")
+heatmap.2(mr23d,trace="none",col=colfunc(25),scale="none", margins = c(10,25), cexRow=0.65,
+  main="Top ranked pathways in amy/hip (discordant)" , cexCol=0.9 )
 dev.off()
 
 ```
