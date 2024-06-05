@@ -1738,9 +1738,12 @@ m2_top_updn <- c(m2_top_up,m2_top_dn)
 m2_top_updn <- m2_top_updn[order(m2_top_updn)]
 
 # heatmap
-mr2 <- head(subset(mres2$enrichment_result,p.adjustMANOVA<0.05),50)
+mr2 <- head(mres2$enrichment_result,50)
+
+rownames(mr2) <- mr2$set
+
+#mr2 <- head(mres2$enrichment_result,50)
 mr2 <- as.matrix(mr2[,4:5])
-rownames(mr2) <- head(mres2$enrichment_result,50)$set
 
 colfunc <- colorRampPalette(c("blue", "white", "red"))
 
@@ -1951,9 +1954,10 @@ m3_top_updn <- c(m3_top_up,m3_top_dn)
 m3_top_updn <- m3_top_updn[order(m3_top_updn)]
 
 # heatmap
-mr3 <- head(subset(mres3$enrichment_result,p.adjustMANOVA<0.05),50)
+mr3 <- head(mres3$enrichment_result,50)
+
+rownames(mr3) <- mr3$set
 mr3 <- as.matrix(mr3[,4:5])
-rownames(mr3) <- head(mres3$enrichment_result,50)$set
 
 colfunc <- colorRampPalette(c("blue", "white", "red"))
 
