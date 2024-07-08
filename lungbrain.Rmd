@@ -1448,8 +1448,8 @@ par(mar=c(2,2,2,2))
 heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
 
-pdf("plot22_mitch1_heatmap01.pdf")
-heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+pdf("plot22_mitch1_heatmap01.pdf", height=9,width=7)
+heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(5,28), cexRow=0.7,
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
 dev.off()
 
