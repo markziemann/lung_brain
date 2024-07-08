@@ -1221,7 +1221,7 @@ Firstly need to conduct mitch enrichment analysis for each contrast separately.
 ```{r,gene_sets}
 
 if  (!file.exists("mouse_msigdb_reactome_2022-02-16.gmt")) {
-  download.file("https://ziemann-lab.net/public/msigdb_mouse/mouse_msigdb_reactome_2022-02-16.gmt"
+  download.file("https://ziemann-lab.net/public/msigdb_mouse/mouse_msigdb_reactome_2022-02-16.gmt",
     destfile="mouse_msigdb_reactome_2022-02-16.gmt")
 }
 genesets <- gmt_import("mouse_msigdb_reactome_2022-02-16.gmt")
