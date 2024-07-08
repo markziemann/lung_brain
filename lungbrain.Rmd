@@ -1437,7 +1437,7 @@ subset(as,s.LPS<-0.2 & s.OVA<0.2)  %>%
   kbl(caption = "Pathways downregulated in LPS and OVA") %>%
   kable_paper("hover", full_width = F)
 
-# heatmap
+# heatmap 30
 mr1 <- head(subset(mres1$enrichment_result,p.adjustMANOVA<0.05),30)
 mr1 <- as.matrix(mr1[,4:5])
 rownames(mr1) <- head(mres1$enrichment_result,30)$set
@@ -1449,6 +1449,22 @@ heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cex
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
 
 pdf("plot22_mitch1_heatmap01.pdf")
+heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
+dev.off()
+
+# heatmap 50
+mr1 <- head(subset(mres1$enrichment_result,p.adjustMANOVA<0.05),50)
+mr1 <- as.matrix(mr1[,4:5])
+rownames(mr1) <- head(mres1$enrichment_result,50)$set
+
+colfunc <- colorRampPalette(c("blue", "white", "red"))
+
+par(mar=c(2,2,2,2))
+heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
+  main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
+
+pdf("plot22_mitch1_heatmap01b.pdf")
 heatmap.2(mr1,trace="none",col=colfunc(25),scale="none", margins = c(10,28), cexRow=0.7,
   main="Top ranked pathways in hypothalamus" , cexCol=0.9 )
 dev.off()
